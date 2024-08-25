@@ -86,8 +86,8 @@
         }
 
         .team-member img {
-            width: 100px;
-            height: 100px;
+            width: 200px;
+            height: 200px;
             object-fit: cover;
             border-radius: 10px;
             margin-right: 20px;
@@ -196,7 +196,7 @@
                 "Business Intelligence Analyst", "Financial Planner", "Management Consultant"];
 
             // Number of images
-            const imageCount = 11;
+            const imageCount = 39;
 
             // Create arrays of available indices for images, first names, and surnames
             let availableImages = Array.from({ length: imageCount }, (_, i) => i + 1);
@@ -212,7 +212,7 @@
                 // Select and remove a random image index
                 const randomImageIndex = Math.floor(Math.random() * availableImages.length);
                 const selectedImage = availableImages.splice(randomImageIndex, 1)[0];
-                const imagePath = `images/${selectedImage}.jpg`;
+                const imagePath = `images/${selectedImage}.png`;
 
                 // Select and remove a random first name
                 const randomFirstNameIndex = Math.floor(Math.random() * availableFirstNames.length);
