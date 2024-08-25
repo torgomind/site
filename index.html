@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TORGOMIND Solutions</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #fff;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 4rem;
+            font-weight: 300;
+            margin: 0;
+        }
+
+        .header h2 {
+            font-size: 2rem;
+            font-weight: 300;
+            color: #666;
+            margin: -20px 0 20px 0;
+        }
+
+        .links {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .links img {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .links div {
+            text-align: left;
+        }
+
+        .links a {
+            display: block;
+            font-weight: bold;
+            color: #000;
+            text-decoration: none;
+            margin-bottom: 10px;
+        }
+
+        .main-content {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .team-section {
+            width: 45%;
+        }
+
+        .team-section h3 {
+            font-style: italic;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+
+        .team-member {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .team-member img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-right: 20px;
+        }
+
+        .member-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .member-info h4 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+
+        .member-info p {
+            margin: 5px 0 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>TORGOMIND</h1>
+            <h2>solutions</h2>
+        </div>
+
+        <!-- Links and Image -->
+        <div class="links">
+            <img src="images/under4.gif">
+            <div>
+                <p><strong>Links:</strong></p>
+                <a href="#">Itch.io</a>
+                <a href="#">instagram</a>
+                <a href="#">steam</a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Team Section -->
+            <div class="team-section">
+                <h3>meet the team!</h3>
+                <div id="content">
+                    <!-- Team members will be generated here by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Contact Form -->
+            <div class="container">
+              <h2>Contact:</h2>
+              <a href="https://formsubmit.co/el/mixova">Contact Form Link</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.onload = function() {
+            // List of first names
+            const firstNames = [
+              "John", "Michael", "David", "Robert", "William",
+              "Richard", "Thomas", "James", "Charles", "Daniel",
+              "Matthew", "Joseph", "Christopher", "Paul", "Mark",
+              "Donald", "George", "Kenneth", "Steven", "Edward",
+              "Brian", "Ronald", "Anthony", "Kevin", "Jason",
+              "Jeffrey", "Frank", "Scott", "Eric", "Stephen",
+              "Andrew", "Raymond", "Gregory", "Benjamin", "Jerry",
+              "Timothy", "Dennis", "Gary", "Peter", "Harold",
+              "Douglas", "Henry", "Carl", "Arthur", "Ryan",
+              "Roger", "Joe", "Larry", "Albert", "Walter"
+            ];
+
+            // List of surnames
+            const surnames = [
+              "Smith", "Johnson", "Williams", "Brown", "Jones",
+              "Miller", "Davis", "Wilson", "Anderson", "Taylor",
+              "Thomas", "Jackson", "White", "Harris", "Martin",
+              "Thompson", "Garcia", "Martinez", "Robinson", "Clark",
+              "Rodriguez", "Lewis", "Lee", "Walker", "Hall",
+              "Allen", "Young", "Hernandez", "King", "Wright",
+              "Lopez", "Hill", "Scott", "Green", "Adams",
+              "Baker", "Gonzalez", "Nelson", "Carter", "Mitchell",
+              "Perez", "Roberts", "Turner", "Phillips", "Campbell",
+              "Parker", "Evans", "Edwards", "Collins", "Stewart"
+            ];
+
+            // List of titles
+            const titles = ["Chief Executive Officer (CEO)", "Chief Financial Officer (CFO)",
+                "Chief Marketing Officer (CMO)", "Director of Operations", "Human Resources Manager",
+                "Marketing Manager", "Sales Representative", "Business Analyst", "Project Manager",
+                "Product Manager", "Data Scientist", "Content Strategist", "Brand Ambassador",
+                "Customer Success Specialist", "Digital Marketing Specialist", "Public Relations Coordinator",
+                "Financial Analyst", "Operations Coordinator", "Quality Assurance Analyst", "Supply Chain Manager",
+                "UX/UI Designer", "Social Media Manager", "Account Executive", "Business Development Associate",
+                "Event Coordinator", "Market Research Analyst", "Sales Operations Manager",
+                "Technical Support Specialist", "Content Marketing Manager", "Financial Controller",
+                "Logistics Coordinator", "Product Owner", "Risk Management Specialist",
+                "User Experience Researcher", "Account Manager", "Data Analyst",
+                "HR Generalist", "Operations Manager", "Recruitment Specialist", "Software Engineer",
+                "Web Developer", "Artificial Intelligence Specialist", "Customer Relationship Manager",
+                "Marketing Coordinator", "Sales Manager", "Technical Project Manager",
+                "Business Intelligence Analyst", "Financial Planner", "Management Consultant"];
+
+            // Number of images
+            const imageCount = 11;
+
+            // Create arrays of available indices for images, first names, and surnames
+            let availableImages = Array.from({ length: imageCount }, (_, i) => i + 1);
+            let availableFirstNames = [...firstNames];
+            let availableSurnames = [...surnames];
+            let availableTitles = [...titles];
+
+            // Container to hold the cards
+            const container = document.getElementById('content');
+
+            // Create 5 unique entries
+            for (let i = 0; i < 5; i++) {
+                // Select and remove a random image index
+                const randomImageIndex = Math.floor(Math.random() * availableImages.length);
+                const selectedImage = availableImages.splice(randomImageIndex, 1)[0];
+                const imagePath = `images/${selectedImage}.jpg`;
+
+                // Select and remove a random first name
+                const randomFirstNameIndex = Math.floor(Math.random() * availableFirstNames.length);
+                const selectedFirstName = availableFirstNames.splice(randomFirstNameIndex, 1)[0];
+
+                // Select and remove a random surname
+                const randomSurnameIndex = Math.floor(Math.random() * availableSurnames.length);
+                const selectedSurname = availableSurnames.splice(randomSurnameIndex, 1)[0];
+
+                // Select and remove a company title
+                const randomTitleIndex  = Math.floor(Math.random() * availableTitles.length);
+                const selectedTitle = availableTitles.splice(randomTitleIndex, 1)[0];
+
+                // Combine the selected first name and surname
+                const fullName = `${selectedFirstName} ${selectedSurname}`;
+
+                // Create card element
+                const card = document.createElement('div');
+                card.className = 'team-member';
+
+                // Create and add image element
+                const img = document.createElement('img');
+                img.src = imagePath;
+                card.appendChild(img);
+
+                // Create info div
+                const infoDiv = document.createElement('div');
+                infoDiv.className = 'member-info';
+
+                // Create and add name element
+                const name = document.createElement('h4');
+                name.textContent = fullName;
+                infoDiv.appendChild(name);
+
+                // Add title element
+                const title = document.createElement('p');
+                title.textContent = selectedTitle;
+                infoDiv.appendChild(title);
+
+                // Add info div to card
+                card.appendChild(infoDiv);
+
+                // Add card to container
+                container.appendChild(card);
+            }
+        };
+    </script>
+</body>
+</html>
