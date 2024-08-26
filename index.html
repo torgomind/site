@@ -214,7 +214,7 @@
                 "Business Intelligence Analyst", "Financial Planner", "Management Consultant"];
 
             // Number of images
-            const imageCount = 39;
+            const imageCount = 57;
 
             // Create arrays of available indices for images, first names, and surnames
             let availableImages = Array.from({ length: imageCount }, (_, i) => i + 1);
@@ -230,7 +230,7 @@
                 // Select and remove a random image index
                 const randomImageIndex = Math.floor(Math.random() * availableImages.length);
                 const selectedImage = availableImages.splice(randomImageIndex, 1)[0];
-                const imagePath = `images/${selectedImage}.png`;
+                const imagePath = `images/${selectedImage}.jpg`;
 
                 // Select and remove a random first name
                 const randomFirstNameIndex = Math.floor(Math.random() * availableFirstNames.length);
