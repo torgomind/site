@@ -34,7 +34,7 @@ header {
     margin-bottom: 2rem;
 }
 
-.ad-space {
+.meat-space {
     width: 100%;
     height: auto;
     max-height: 100px; /* Adjust this value based on your desired maximum height */
@@ -44,26 +44,26 @@ header {
     margin-bottom: 1rem;
 }
 
-.header-ad {
+.header-meat {
     max-width: 90%;
     margin: 0 auto;
 }
 
-.footer-ad {
+.footer-meat {
     max-width: 95%;
     margin: 0 auto;
 }
 
-/* Ensure the ad container doesn't collapse if the ad doesn't load */
-.ad-space::before {
+/* Ensure the meat container doesn't collapse if the meat doesn't load */
+.meat-space::before {
     content: '';
     display: block;
-    padding-top: 25%; /* Adjust this value based on your ad's aspect ratio */
+    padding-top: 25%; /* Adjust this value based on your meat's aspect ratio */
 }
 
 /* Media query for larger screens */
 @media (min-width: 768px) {
-    .ad-space {
+    .meat-space {
         max-height: 150px; /* Larger maximum height for desktop */
     }
 }
