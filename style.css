@@ -1,126 +1,231 @@
 @font-face {
-        font-family: 'BirchLeaf';
-        src: url('assets/BirchLeaf.ttf') format('truetype');
-        font-weight: normal;
-        font-style: normal;
-    }
+    font-family: 'BirchLeaf';
+    src: url('assets/BirchLeaf.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
 
-    body {
-        font-family: 'BirchLeaf', sans-serif;
-        background-color: #0F0000;
-        background-image: url('images/meat/background.png');
-        background-repeat: repeat; /* This will tile the image */
-        background-size: 100%;
-        margin: 0;
-        padding: 20px;
-        color: #333;
-    }
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
-    .container {
-        max-width: 1000px;
-        margin: 0 auto;
-    }
+body {
+    font-family: 'BirchLeaf', sans-serif;
+    background-color: #0F0000;
+    background-image: url('images/meat/background.png');
+    background-repeat: repeat;
+    background-attachment: fixed;
+    background-size: cover; /* cover or 100%*/
+    background-position: center;
+    color: #333;
+    line-height: 1.6;
+}
 
-    .header {
-        text-align: center;
-        margin-bottom: 40px;
-    }
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
 
-    .header h1 {
-        font-size: 4rem;
-        font-weight: 300;
-        margin: 0;
-    }
+header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
 
-    .header h2 {
-        font-size: 3rem;
-        font-weight: 300;
-        color: #e9c1c1;
-        margin: -20px 0 20px 0;
-    }
+.ad-space {
+    width: 100%;
+    height: auto;
+    max-height: 100px; /* Adjust this value based on your desired maximum height */
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin-bottom: 1rem;
+}
 
+.header-ad {
+    max-width: 90%;
+    margin: 0 auto;
+}
+
+.footer-ad {
+    max-width: 95%;
+    margin: 0 auto;
+}
+
+/* Ensure the ad container doesn't collapse if the ad doesn't load */
+.ad-space::before {
+    content: '';
+    display: block;
+    padding-top: 25%; /* Adjust this value based on your ad's aspect ratio */
+}
+
+/* Media query for larger screens */
+@media (min-width: 768px) {
+    .ad-space {
+        max-height: 150px; /* Larger maximum height for desktop */
+    }
+}
+
+.title-image {
+    max-width: 100%;
+    height: auto;
+    margin-top: 6rem;
+}
+
+.links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.links a {
+    font-size: 1.2rem;
+    color: #9D4E4C;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    height: 15px; /* Set a fixed height for all links */
+}
+
+.new-badge {
+    position: relative;
+    padding-left: 36px; /* Make space for the "NEW" icon */
+}
+
+.new-badge::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 32px;
+    height: 21px;
+    background-image: url('images/ads/new.gif');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+
+
+.mail-icon {
+    position: relative;
+    padding-right: 28px; /* Make space for the mail icon */
+}
+
+.mail-icon::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 24px;
+    height: 24px;
+    background-image: url('images/ads/mail5.gif');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.description {
+    color: #504B4B;
+    font-size: 1.5rem;
+    text-align: center;
+    margin-bottom: 2rem;
+    line-height: 1.7rem;
+}
+
+.video-container {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    height: 0;
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.main-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 2rem;
+}
+
+.additional-products {
+    width: 100%;
+}
+
+.additional-products h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: #9D4E4C;
+    /*color: #504B4B;*/
+}
+
+.product-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.product {
+    flex: 1 1 calc(50% - 0.5rem);
+    text-decoration: none;
+    color: #e9c1c1;
+}
+
+.product img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
+
+.product span {
+    display: block;
+    margin-top: 0.5rem;
+}
+
+footer {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.footer-ad {
+    max-width: 80%;
+    height: auto;
+    margin-bottom: 1rem;
+}
+
+.hit-counter {
+    margin-bottom: 1rem;
+}
+
+.terms {
+    font-size: 0.8rem;
+    color: #1A1818;
+    text-align: left;
+    line-height: 1;
+}
+
+@media (max-width: 768px) {
     .links {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 40px;
-        margin-bottom: 40px;
-        color: #e9c1c1;
-    }
-
-    .links img {
-        /*width: 200px;
-        height: 200px;
-        object-fit: cover;
-        border-radius: 10px;*/
-    }
-
-    .links div {
-        text-align: left;
-    }
-
-    .links a {
-        display: inline-block;
-        font-weight: bold;
-        color: #9D4E4C;
-        text-decoration: none;
-        margin-bottom: 10px;
-        font-size: 1.7rem;
-    }
-
-    .main-content {
-        display: flex;
-        justify-content: space-between;
-    }
-
-    .words {
-        width: 100%;
-        display: inline-block;
-        /*font-weight: bold;*/
-        color: #504B4B;
-        text-decoration: none;
-        margin-bottom: 3rem;
-        font-size: 1.9rem;
-        text-align: left
-        margin-top: 20px;
-    }
-
-    .team-section {
-        width: 45%;
-    }
-
-    .team-section h3 {
-        font-style: italic;
-        margin-bottom: 20px;
-        font-size: 1.7rem;
-    }
-
-    .team-member {
-        display: flex;
-        align-items: flex-start;
-        margin-bottom: 20px;
-    }
-
-    .team-member img {
-        width: 200px;
-        height: 200px;
-        object-fit: cover;
-        border-radius: 10px;
-        margin-right: 20px;
-    }
-
-    .member-info {
-        display: flex;
         flex-direction: column;
+        align-items: center;
     }
 
-    .member-info h4 {
-        margin: 0;
-        font-size: 1.2rem;
+    .product {
+        flex: 1 1 100%;
     }
-
-    .member-info p {
-        margin: 5px 0 0;
-        color: #e9c1c1;
-        font-size: 0.9rem;
-    }
+}
