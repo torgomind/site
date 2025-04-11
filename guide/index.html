@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coming Soon</title>
+    <style>
+        @font-face {
+            font-family: 'BirchLeaf';
+            src: url('../assets/BirchLeaf.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0F0F00;
+            color: #9D4E4C;
+            font-family: 'BirchLeaf', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .glitch-container {
+            position: relative;
+            font-size: 6rem;
+            font-weight: bold;
+            letter-spacing: 0.1em;
+        }
+        .letter {
+            display: inline-block;
+            position: relative;
+            transition: transform 0.05s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="glitch-container" id="glitchText"></div>
+
+    <script>
+        const text = "coming_soon";
+        const container = document.getElementById('glitchText');
+
+        // Expanded glitch character set
+        const glitchChars = [
+            // Standard symbols
+            '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '+', '=', '{', '}', '[', ']', '|', '\\', '/', '?', '<', '>', '~', '`',
+            // Uncommon symbols
+            '§', '±', '¶', '•', '℮', '№', '℗', '℘', '℟', '℮', '™', '℠', '⊕', '⊗', '⊂', '⊃', '⊆', '⊇', '⊄', '⊅',
+            // Greek, Cyrillic, Arabic, etc.
+            'Ϗ', 'ϗ', 'Ϙ', 'ϙ', 'Ϛ', 'ϛ', 'Ϝ', 'ϝ', 'Ϟ', 'ϟ', 'Ϡ', 'ϡ', 'Ϣ', 'ϣ', 'Ϥ', 'ϥ', 'Ϧ', 'ϧ', 'Ϩ', 'ϩ', 'Ϫ', 'ϫ', 'Ϭ', 'ϭ', 'Ϯ', 'ϯ',
+            'Ѐ', 'Ё', 'Ђ', 'Ѓ', 'Є', 'Ѕ', 'І', 'Ї', 'Ј', 'Љ', 'Њ', 'Ћ', 'Ќ', 'Ѝ', 'Ў', 'Џ', 'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ж', 'З', 'И', 'Й',
+            'ݐ', 'ݑ', 'ݒ', 'ݓ', 'ݔ', 'ݕ', 'ݖ', 'ݗ', 'ݘ', 'ݙ', 'ݚ', 'ݛ', 'ݜ', 'ݝ', 'ݞ', 'ݟ', 'ݠ', 'ݡ', 'ݢ', 'ݣ', 'ݤ', 'ݥ', 'ݦ', 'ݧ', 'ݨ', 'ݩ',
+            'ݪ', 'ݫ', 'ݬ', 'ݭ', 'ݮ', 'ݯ', 'ݰ', 'ݱ', 'ݲ', 'ݳ', 'ݴ', 'ݵ', 'ݶ', 'ݷ', 'ݸ', 'ݹ', 'ݺ', 'ݻ', 'ݼ', 'ݽ', 'ݾ', 'ݿ',
+            // Mathematical symbols
+            '∀', '∁', '∂', '∃', '∄', '∅', '∆', '∇', '∈', '∉', '∊', '∋', '∌', '∍', '∎', '∏', '∐', '∑', '−', '∓', '∔', '∕', '∖', '∗',
+            // More obscure Unicode
+            'ꙮ', 'ꚜ', 'ꚝ', 'ꜿ', 'ꬁ', 'ꬠ', 'ꬡ', 'ꬢ', 'ꬣ', 'ꬤ', 'ꬥ', 'ꬦ', 'Ꭓ', 'Ꮛ', 'Ꮜ',
+            '⸎', '⸏', '⸐', '⸑', '⸒', '⸓', '⸔', '⸕', '⸖', '⸗', '⸘', '⸙', '⸚', '⸛', '⸜', '⸝', '⸞', '⸟', '⸠', '⸡',
+            // Zalgo-style combining characters
+            '̴', '̵', '̶', '̷', '̸', '̹', '̺', '̻', '̼', '̽', '̾', '̿', '̀', '́', '͂', '̓', '̈́', 'ͅ', '͆', '͇', '͈', '͉', '͊', '͋', '͌', '͍', '͎', '͏',
+            '͐', '͑', '͒', '͓', '͔', '͕', '͖', '͗', '͘', '͙', '͚', '͛', '͜', '͝', '͞', '͟', '͠', '͡', '͢'
+        ];
+
+        const fontOptions = [
+            'monospace', 'serif', 'sans-serif', 'cursive', 'fantasy',
+            'system-ui', 'ui-serif', 'ui-sans-serif', 'ui-monospace', 'ui-rounded',
+            'Arial', 'Verdana', 'Courier', 'Times New Roman', 'Georgia', 'Garamond',
+            '"Comic Sans MS"', '"Segoe UI"', '"Trebuchet MS"', '"Arial Black"'
+        ];
+
+        // Create spans for each letter
+        for (let i = 0; i < text.length; i++) {
+            const letterSpan = document.createElement('span');
+            letterSpan.className = 'letter';
+            letterSpan.textContent = text[i];
+            letterSpan.dataset.original = text[i];
+            container.appendChild(letterSpan);
+
+            // Add space after "coming"
+            if (i === 6) {
+                const space = document.createElement('span');
+                space.className = 'letter';
+                space.textContent = ' ';
+                space.dataset.original = ' ';
+                container.appendChild(space);
+            }
+        }
+
+        const letters = document.querySelectorAll('.letter');
+
+        // Random number generator helpers
+        function randomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function randomFloat(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        // Get multiple random glitch characters
+        function getRandomGlitchChars(count) {
+            let result = '';
+            for (let i = 0; i < count; i++) {
+                result += glitchChars[randomInt(0, glitchChars.length - 1)];
+            }
+            return result;
+        }
+
+        // Different glitch effects
+        function replaceWithGlitch(letter) {
+            const original = letter.dataset.original;
+            if (original === ' ') return; // Don't glitch spaces
+
+            // Replace with 1-10 glitch characters
+            const glitchCount = randomInt(1, 10);
+            letter.textContent = getRandomGlitchChars(glitchCount);
+
+            // Set timeout to revert back
+            setTimeout(() => {
+                letter.textContent = original;
+            }, randomInt(50, 1500));
+        }
+
+        function jitterLetter(letter) {
+            const originalTransform = letter.style.transform;
+            const jitterX = randomInt(-15, 15);
+            const jitterY = randomInt(-15, 15);
+
+            letter.style.transform = `translate(${jitterX}px, ${jitterY}px)`;
+
+            // Set timeout to revert back
+            setTimeout(() => {
+                letter.style.transform = originalTransform;
+            }, randomInt(50, 800));
+        }
+
+        function changeFontStyle(letter) {
+            const originalFont = letter.style.fontFamily;
+            const originalSize = letter.style.fontSize;
+            const originalWeight = letter.style.fontWeight;
+
+            letter.style.fontFamily = fontOptions[randomInt(0, fontOptions.length - 1)];
+            letter.style.fontSize = `${randomFloat(0.5, 2.5)}em`;
+            letter.style.fontWeight = `${randomInt(100, 900)}`;
+
+            // Set timeout to revert back
+            setTimeout(() => {
+                letter.style.fontFamily = originalFont;
+                letter.style.fontSize = originalSize;
+                letter.style.fontWeight = originalWeight;
+            }, randomInt(100, 2000));
+        }
+
+        function flickerLetter(letter) {
+            const originalOpacity = letter.style.opacity;
+            letter.style.opacity = `${randomFloat(0, 0.5)}`;
+
+            // Set timeout to revert back
+            setTimeout(() => {
+                letter.style.opacity = originalOpacity || '1';
+            }, randomInt(50, 400));
+        }
+
+        function disappearLetter(letter) {
+            const original = letter.dataset.original;
+            if (original === ' ') return; // Don't glitch spaces
+
+            const originalContent = letter.textContent;
+            letter.textContent = '';
+
+            // Set timeout to revert back
+            setTimeout(() => {
+                letter.textContent = originalContent;
+            }, randomInt(150, 1000));
+        }
+
+        function addZalgo(letter) {
+            const original = letter.textContent;
+            if (original === ' ') return;
+
+            // Add random number of combining characters
+            const zalgoCount = randomInt(3, 20);
+            let zalgoText = original;
+
+            for (let i = 0; i < zalgoCount; i++) {
+                const combiningChar = glitchChars[randomInt(glitchChars.length - 40, glitchChars.length - 1)];
+                const position = randomInt(0, zalgoText.length);
+                zalgoText = zalgoText.slice(0, position) + combiningChar + zalgoText.slice(position);
+            }
+
+            letter.textContent = zalgoText;
+
+            // Set timeout to revert back
+            setTimeout(() => {
+                letter.textContent = original;
+            }, randomInt(200, 1500));
+        }
+
+        // Track current glitch intensity (0 to 1)
+        let glitchIntensity = 0;
+
+        // Change glitch intensity over time
+        function updateGlitchIntensity() {
+            // Randomly decide if we should change the intensity drastically
+            if (Math.random() < 0.2) {
+                // Sudden change
+                glitchIntensity = Math.random();
+            } else {
+                // Gradual change
+                const change = randomFloat(-0.3, 0.3);
+                glitchIntensity = Math.max(0, Math.min(1, glitchIntensity + change));
+            }
+
+            // Schedule next update with variable timing
+            const nextUpdateTime = randomInt(100, 5000);
+            setTimeout(updateGlitchIntensity, nextUpdateTime);
+        }
+
+        // Main glitch loop with variable timing based on intensity
+        function applyRandomGlitch() {
+            // Skip glitching sometimes when intensity is low
+            if (Math.random() > glitchIntensity * 1.5) {
+                // Schedule next glitch attempt
+                const nextTime = randomInt(100, 1000 / (glitchIntensity + 0.1));
+                setTimeout(applyRandomGlitch, nextTime);
+                return;
+            }
+
+            // Select a random letter
+            const randomIndex = randomInt(0, letters.length - 1);
+            const randomLetter = letters[randomIndex];
+
+            // Select a random glitch effect, weighted by current intensity
+            const glitchType = randomInt(0, 5);
+
+            switch(glitchType) {
+                case 0:
+                    replaceWithGlitch(randomLetter);
+                    break;
+                case 1:
+                    jitterLetter(randomLetter);
+                    break;
+                case 2:
+                    changeFontStyle(randomLetter);
+                    break;
+                case 3:
+                    flickerLetter(randomLetter);
+                    break;
+                case 4:
+                    disappearLetter(randomLetter);
+                    break;
+                case 5:
+                    addZalgo(randomLetter);
+                    break;
+            }
+
+            // Set a random timeout before next glitch, influenced by intensity
+            const nextTime = randomInt(
+                50 / (glitchIntensity + 0.1),
+                1000 / (glitchIntensity + 0.1)
+            );
+            setTimeout(applyRandomGlitch, nextTime);
+        }
+
+        // Occasionally create a major glitch affecting multiple letters
+        function majorGlitch() {
+            // Skip sometimes based on intensity
+            if (Math.random() > glitchIntensity * 1.5) {
+                setTimeout(majorGlitch, randomInt(1000, 5000));
+                return;
+            }
+
+            const glitchCount = randomInt(2, Math.floor(8 * glitchIntensity) + 2);
+
+            for (let i = 0; i < glitchCount; i++) {
+                const randomIndex = randomInt(0, letters.length - 1);
+                const randomLetter = letters[randomIndex];
+
+                // Apply multiple effects
+                replaceWithGlitch(randomLetter);
+                jitterLetter(randomLetter);
+                if (Math.random() > 0.5) addZalgo(randomLetter);
+                if (Math.random() > 0.7) changeFontStyle(randomLetter);
+            }
+
+            // Set a random timeout before next major glitch
+            const nextTime = randomInt(500, 4000 / (glitchIntensity + 0.1));
+            setTimeout(majorGlitch, nextTime);
+        }
+
+        // Add extreme glitch mode that occasionally occurs
+        function extremeGlitch() {
+            // Decide if we should trigger extreme glitch
+            if (Math.random() < 0.2) {
+                // Save original state
+                const originalGlitchIntensity = glitchIntensity;
+
+                // Set to maximum intensity
+                glitchIntensity = 1;
+
+                // Apply to all letters
+                letters.forEach(letter => {
+                    if (Math.random() > 0.3) {
+                        const effect = randomInt(0, 5);
+                        switch(effect) {
+                            case 0: replaceWithGlitch(letter); break;
+                            case 1: jitterLetter(letter); break;
+                            case 2: changeFontStyle(letter); break;
+                            case 3: flickerLetter(letter); break;
+                            case 4: disappearLetter(letter); break;
+                            case 5: addZalgo(letter); break;
+                        }
+                    }
+                });
+
+                // Revert after random duration
+                setTimeout(() => {
+                    glitchIntensity = originalGlitchIntensity;
+
+                    // Reset all letters
+                    letters.forEach(letter => {
+                        letter.textContent = letter.dataset.original;
+                        letter.style.transform = '';
+                        letter.style.fontFamily = '';
+                        letter.style.fontSize = '';
+                        letter.style.fontWeight = '';
+                        letter.style.opacity = '1';
+                    });
+
+                }, randomInt(100, 5000));
+            }
+
+            // Schedule next check
+            setTimeout(extremeGlitch, randomInt(3000, 15000));
+        }
+
+        // Start the glitching
+        setTimeout(() => {
+            updateGlitchIntensity();
+            applyRandomGlitch();
+            majorGlitch();
+            extremeGlitch();
+        }, 1000);
+    </script>
+</body>
+</html>
