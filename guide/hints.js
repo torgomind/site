@@ -52,8 +52,8 @@ const HINT_DATA = {
         title: "A Later Area",
         type: "submenu",
         subtopics: [
-            { id: "later_maze_end", title: "I've completed the maze. What now?" },
-            { id: "later_teleporter", title: "The teleporter in the train station." },
+            { id: "later_maze_end", title: "Maze completed. What now?" },
+            { id: "later_teleporter", title: "The teleporter in the bus station." },
             { id: "later_butcher", title: "The butcher shop" },
             { id: "later_guards", title: "The guards and shields" },
             { id: "later_ending_b", title: "I finished Ending B. What now?" },
