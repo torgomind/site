@@ -69,7 +69,7 @@ const HINT_DATA = {
         title: "I've completed the maze. What now?",
         type: "hints",
         steps: [
-            "At the end of the maze you are given use knowledge.",
+            "At the end of the maze you are given critical knowledge.",
             "The statue at the end of the maze. Did it look familiar?",
             "Your character looks closely at a detail on the statue/object. This is important.",
             "The statue is the same as the object on the main menu.",
