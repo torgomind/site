@@ -74,7 +74,8 @@ const HINT_DATA = {
             "Your character looks closely at a detail on the statue/object. This is important.",
             "The statue is the same as the object on the main menu.",
             "The hint is drawing your attention to a part of this organic shape from the main menu.",
-            "Have you tried clicking this detail on the main menu?"
+            "Have you tried clicking this detail on the main menu?",
+            "Clicking this hidden switch reveals a secret menu, can be used to enable new features."
         ]
     },
     "later_teleporter": {
@@ -108,7 +109,7 @@ const HINT_DATA = {
             "Is there some other part of the game involving letters on a 5x5 grid?",
             "The letters have to be placed in their correct positions corresponding to the positions of letters from the secret menu on the main menu.",
             "This puzzle has a nasty trick. Double check to make sure you have the letters correct. What is unique about these letters? Maybe giving the shields back to the guards can clear things up.",
-            "For each of the letters, when you flip the letter does it remain the same or is it unchanged?"
+            "For each of the letters, when you flip the letter does it remain the same or is a different character?"
         ]
     },
     "later_ending_b": {
@@ -117,7 +118,7 @@ const HINT_DATA = {
         steps: [
             "After the shield puzzle you made it to a building. You should have been given a clue.",
             "By opening a chest the clue was revealed to you. Did you write it down?",
-            "The clue is a password that can be entered to reveal the final area."
+            "The clue is a password that can be entered to reach the final area."
         ]
     },
     "later_underground": {
