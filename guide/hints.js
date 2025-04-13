@@ -30,10 +30,11 @@ const HINT_DATA = {
         steps: [
             "Keeping notes with a pen and paper would be useful.",
             "Try exploring around and interacting with things. In this way you can acquire useful items.",
+            "There is a hint room in the town that will give some tips. Sometimes characters can also impart useful advice.",
             "Sometimes you need to interact multiple times, not just once.",
-            "Some characters will want you to do one quest, other characters may want you to do many quests.",
+            "Some characters will want you to do one quest, other characters may want you to do multiple quests.",
             "It's important to figure out how to generate currency, which can be used to purchase items. There are hints around the game that will suggest a way to generate currency.",
-            "The quests are randomly generated, but you will never be softlocked. If completely stumped you can start over to reset to different quests."
+            "The quests are randomly generated, but you will never be softlocked. If completely confused you can restart the game and hope for easier quests."
         ]
     },
     "start_npc_item": {
@@ -41,9 +42,12 @@ const HINT_DATA = {
         type: "hints",
         steps: [
             "Check the shops and note down those items. Is it one of those?",
+            "It might be that you need to figure out how to gather currency or how to use the shops to purchase items.",
             "Some quest items are more difficult than others, depending on the character and rng. Sometimes it will be easy to acquire the item, other times it will be a long process.",
-            "If not a store item, it is probably a quest item from another NPC. Have you fulfilled all of the quests of the other NPCs? Try going back and doing a second or third quest from the same NPC.",
-            "If stumped, try fishing for quest items in the three garbage bins."
+            "If not a store item, it is probably a quest item from another NPC. Have you fulfilled all of the quests of the other NPCs? Try going back to complete more quests from an important NPC.",
+            "If stumped, try fishing for quest items in the garbage bins or the fountain.",
+            "Items can come from the three merchants, the ear fountain, the garbage bins, or other NPCs. You just need to get the right item to the right characters.",
+            "Currency is given to you from just one character. It's possible to farm this character for infinite currency."
         ]
     },
 
