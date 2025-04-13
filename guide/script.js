@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (currentHintIndex < currentHints.length) {
                 nextHintButton.textContent = "Show Next Hint";
             } else {
-                nextHintButton.textContent = "That's all the hints!";
+                nextHintButton.textContent = "Good luck!";
                 nextHintButton.disabled = true;
             }
         }
