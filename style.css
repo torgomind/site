@@ -74,6 +74,10 @@ header {
     margin-top: 6rem;
 }
 
+a {
+    color: #9D4E4C;
+}
+
 .links {
     display: flex;
     flex-wrap: wrap;
@@ -84,7 +88,7 @@ header {
 }
 
 .links a {
-    font-size: 1.2rem;
+    font-size: 1.8rem;
     color: #9D4E4C;
     text-decoration: none;
     display: inline-flex;
