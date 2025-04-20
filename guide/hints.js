@@ -7,9 +7,9 @@ const HINT_DATA = {
         title: "Controls",
         type: "hints",
         steps: [
-            "WASD are used for movement and Q/E for turning. ESC key will bring up the pause menu and toggle the HUD. Spacebar is for use or action. F will swap to the next item. F4 can toggle fullscreen mode.",
+            "WASD are used for movement and Q/E for turning. ESC key will bring up the pause menu and toggle the HUD. Spacebar is for interacting. F will swap to the next item. F4 can toggle fullscreen mode.",
             "The entire game can also be controlled with the mouse by clicking on the various buttons on the UI which correspond to the above. Note the button in the very top-right corner.",
-            "The entire game can also be controlled with a gameplay/controller. D-pad/R1/L1 for movement. FaceButtons Left(X/square) and Right(B/circle) for actions. Start/select for more options. LeftStick for cursor control. FaceButton Down(A/X) for click.",
+            "The entire game can also be controlled with a controller. D-pad/R1/L1 for movement. FaceButtons Left(X/square) and Right(B/circle) for actions. Start/select for more options. LeftStick for cursor control. FaceButton Down(A/X) for click.",
             "The game's brightness can be adjusted from the pause menu once you start the game."
         ]
     },
@@ -20,7 +20,7 @@ const HINT_DATA = {
         type: "submenu",
         subtopics: [
             { id: "start_general_tips", title: "Lost and need general tips" },
-            { id: "start_npc_item", title: "NPC wants an item I cannot find" }
+            { id: "start_npc_item", title: "Cannot find a particular item" }
         ]
     },
     // --- Starting Town Sub-Topics (Hints) ---
@@ -38,15 +38,15 @@ const HINT_DATA = {
         ]
     },
     "start_npc_item": {
-        title: "NPC wants an item I cannot find",
+        title: "Cannot find a particular item",
         type: "hints",
         steps: [
-            "Check the shops and note down those items. Is it one of those?",
+            "Check the shops and note down those items.",
             "It might be that you need to figure out how to gather currency or how to use the shops to purchase items.",
             "Some quest items are more difficult than others, depending on the character and rng. Sometimes it will be easy to acquire the item, other times it will be a long process.",
-            "If not a store item, it is probably a quest item from another NPC. Have you fulfilled all of the quests of the other NPCs? Try going back to complete more quests from an important NPC.",
+            "If not a store item, it is probably a quest item from another character. Have you fulfilled every quest from each individual? Try going back to complete more quests.",
             "If stumped, try fishing for quest items in the garbage bins or the fountain.",
-            "Items can come from the three merchants, the ear fountain, the garbage bins, or other NPCs. You just need to get the right item to the right characters.",
+            "Items can come from the three merchants, the ear fountain, the garbage bins, or the various characters around town. You just need to acquire and transfer the right items.",
             "Currency is given to you from just one character. It's possible to farm this character for infinite currency."
         ]
     },
@@ -136,11 +136,13 @@ const HINT_DATA = {
         title: "Steam Achievements",
         type: "hints",
         steps: [
+            "Most of the achievements will be unlocked by just playing the game through normally.",
             "Deep Pockets : Can be unlocked by acquiring 10 in-game currency.",
             "Voguing: can be unlocked by activating a special event in the night club. This event requires localisation options unlocked.",
+            "Skip: unlocked by using the in-game teleporter system. Explore the train station for hints.",
+            "Front Row: unlocked by witnessing an event in the bar under normal conditions.",
             "Tinnitus: can be unlocked by watching a special event in the bar. This event requires localisation options unlocked.",
-            "Skip: unlocked by using the in-game teleporter system.",
-            "Front Row: unlocked by witnessing an event in the bar under normal conditions."
+            "Rattled: the hint room is beside the park; entry is granted to those who are patient."
         ]
     }
     // --- Add more topics/subtopics as needed ---
