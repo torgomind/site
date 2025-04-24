@@ -4,13 +4,13 @@ const HINT_DATA = {
 
     // --- TOP LEVEL: Controls ---
     "controls": {
-        title: "Controls",
+        title: "Technical Issues & Controls",
         type: "hints",
         steps: [
+            "Too dark? Brightness can be adjusted from the pause menu once you start a new game.",
             "WASD are used for movement and Q/E for turning. ESC key will bring up the pause menu and toggle the HUD. Spacebar is for interacting. F will swap to the next item. F4 can toggle fullscreen mode.",
             "The entire game can also be controlled with the mouse by clicking on the various buttons on the UI which correspond to the above. Note the button in the very top-right corner.",
-            "The entire game can also be controlled with a controller. D-pad/R1/L1 for movement. FaceButtons Left(X/square) and Right(B/circle) for actions. Start/select for more options. LeftStick for cursor control. FaceButton Down(A/X) for click.",
-            "The game's brightness can be adjusted from the pause menu once you start the game."
+            "The entire game can also be controlled with a controller. D-pad/R1/L1 for movement. FaceButtons Left(X/square) and Right(B/circle) for actions. Start/select for more options. LeftStick for cursor control. FaceButton Down(A/X) for click."
         ]
     },
 
