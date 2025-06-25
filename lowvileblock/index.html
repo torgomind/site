@@ -4,14 +4,15 @@
 	<meta charset="UTF-8">
 	<title>LVB Leaderboard</title>
 	<style>
-    /* --- Custom Font Definition --- */
-        @font-face {
-            font-family: 'BirchLeafFont';
+		/* --- Custom Font Definition --- */
+		@font-face {
+			font-family: 'Trajan';
+			src: url('../assets/TrajanPro-Regular.ttf') format('truetype');
+		}
+		@font-face {
+			font-family: 'BirchLeafFont';
             src: url('../assets/BirchLeaf.ttf') format('truetype');
-            font-family: 'Trajan';
-            src: url('../assets/TrajanPro-Regular.ttf') format('truetype');
-
-    }
+		}
 
 		/* --- Global Styles & Background --- */
 		html {
@@ -44,47 +45,88 @@
 
 		/* --- Panel Style --- */
 		.leaderboard {
-			max-width: 450px;
+			max-width: 900px; /* Increased width for two columns */
 			width: 100%;
-			background-color: #1A1D25;
+			background-color: rgba(26, 29, 37, 0.9);
 			border: 2px solid #8DA75D;
 			border-radius: 0;
 			padding: 25px;
 		}
 
+		/* --- NEW: Two-Column Layout --- */
+		.leaderboard-content {
+			display: flex;
+			gap: 40px; /* Space between columns */
+		}
+		.column {
+			flex: 1; /* Each column takes up equal space */
+		}
+
 		/* --- Typography Styling --- */
 		.slogan {
 			color: #8E8EB2;
-			font-size: 3em;
+			font-size: 2.2em; /* Adjusted for space */
 			margin: 0 0 25px 0;
 			text-align: center;
 			text-shadow: 1px 1px 3px #000;
-			min-height: 1.5em; /* Prevents layout shift while slogan loads */
+			min-height: 1.5em;
 		}
 
 		h2 {
-			color: #1A1D25;
-			font-size: 2.0em;
+			color: #c3c3c3;
+			font-size: 1.5em;
 			margin: 20px 0 10px 0;
 			text-align: left;
+			border-bottom: 1px solid #444;
+			padding-bottom: 5px;
 		}
 
-		p {
-			color: #7B787B;
-			font-size: 2.8em;
+		/* --- NEW: Player List Styling --- */
+		.player-list {
+			color: #a7a5a7;
+			font-size: 2.3em;
 			margin: 5px 0;
-			line-height: 1.3;
+			padding-left: 75px; /* Indent the list */
+			line-height: 1.6;
 			text-align: left;
 			text-shadow: 1px 1px 2px #000;
 		}
+		.player-list li::marker {
+			color: #8DA75D;
+			font-weight: bold;
+
+		}
+
+		/* --- NEW: Progress Bar Styling --- */
+		.progress-bar-container {
+			width: 100%;
+			height: 25px;
+			background-color: #101216;
+			border: 1px solid #444;
+			margin-bottom: 5px;
+		}
+		.progress-bar {
+			height: 100%;
+			background-color: #C32656; /* Corruption color */
+			width: 0%; /* Will be set by JavaScript */
+			transition: width 0.5s ease-in-out;
+		}
+		.progress-bar.world-progress {
+			background-color: #8DA75D; /* World progress color */
+		}
+		.progress-label {
+			color: #7B787B;
+			font-size: 0.9em;
+			text-align: right;
+		}
+
 
 		.download-link {
 			display: block;
 			text-align: center;
 			margin-top: 30px;
 			color: #7B787B;
-			font-size: 2em;
-			/*text-decoration: none;*/
+			font-size: 3.5em;
 			text-shadow: 2px 2px 4px #000;
 		}
 
@@ -99,103 +141,119 @@
 	<img src="img/title.png" alt="Game Logo" class="logo">
 
 	<div class="leaderboard">
-		<!-- The placeholder text will be replaced by the script -->
-		<h2 id="slogan_display" class="slogan">...</h2>
+		<div class="leaderboard-content">
+			<!-- Column 1: World Stats -->
+			<div class="column">
+				<h2>Daily Quote</h2>
+				<h3 id="slogan_display" class="slogan">...</h3>
 
-		<h2>Leaders:</h2>
-		<p id="rank1_player">#1: Loading...</p>
-		<p id="rank2_player">#2: Loading...</p>
-		<p id="rank3_player">#3: Loading...</p>
+				<h2>Corruption Level</h2>
+				<div class="progress-bar-container">
+					<div id="corruption_bar" class="progress-bar"></div>
+				</div>
+				<p id="corruption_label" class="progress-label">Loading...</p>
+
+				<h2>Time Until Midnight</h2>
+				<div class="progress-bar-container">
+					<div id="world_progress_bar" class="progress-bar world-progress"></div>
+				</div>
+				<p id="world_progress_label" class="progress-label">Loading...</p>
+			</div>
+
+			<!-- Column 2: Top Players -->
+			<div class="column">
+				<h2>Top Players</h2>
+				<ol id="player_list" class="player-list">
+					<li>Loading...</li>
+				</ol>
+			</div>
+		</div>
 
 		<a href="#" class="download-link">Download</a>
 	</div>
 
 	<!-- The JavaScript section with the new logic -->
 	<script>
-		// --- Word Arrays for Mantra Conversion ---
-		const word1 = [
-			"", "Hard", "Behold", "Dead", "The", "Awaken", "Dripping", "Glowing", "Pale", "Dancing", "Again",
-			"Cute", "Kill", "Betray", "Let", "Sorry", "Me", "We", "Soft", "Tasty", "No",
-			"Yield", "Strange", "King", "Twin", "Dark", "Dead", "Egg", "Sharp", "My", "Your"
-		];
+		// --- Word Arrays for Mantra Conversion (Unchanged) ---
+		const word1=["","Hard","Behold","Dead","The","Awaken","Dripping","Glowing","Pale","Dancing","Again","Cute","Kill","Betray","Let","Sorry","Me","We","Soft","Tasty","No","Yield","Strange","King","Twin","Dark","Dead","Egg","Sharp","My","Your"];const word2=["","Snake","Ear","Ointment","Sirens","Barrel","Slugs","Girls","Bleeding","Fumes","Again","Rulers","Climbers","Guests","Torgo","Meat","They","Varnish","Liquid","Moisture","Drippings","In","The","Suns","Stars","Moons","Tears","Voices","Tongue","Mother","Puppet"];const word3=["","Bleed","Crash","Snarl","Fall","Kill","Burn","Again","Lurking","Forget","Forgotten","Tumble","Said","Drips","Yellow","Night","Sink","Rise","Circle","Flap","Sing","Die","Dissolve","Scream","Bloom","Aches","Dream","Open","Return","Rots","Grows"];
+		function convertMantraCode(code){if(!code||code.length!==6){return"SLOGAN UNKNOWN";}const index1=parseInt(code.substring(0,2),10);const index2=parseInt(code.substring(2,4),10);const index3=parseInt(code.substring(4,6),10);const w1=word1[index1]||"???";const w2=word2[index2]||"???";const w3=word3[index3]||"???";return`${w1} ${w2} ${w3}`;}
 
-		const word2 = [
-			"", "Snake", "Ear", "Ointment", "Sirens", "Barrel", "Slugs", "Girls", "Bleeding", "Fumes", "Again",
-			"Rulers", "Climbers", "Guests", "Torgo", "Meat", "They", "Varnish", "Liquid", "Moisture", "Drippings",
-			"In", "The", "Suns", "Stars", "Moons", "Tears", "Voices", "Tongue", "Mother", "Puppet"
-		];
-
-		const word3 = [
-			"", "Bleed", "Crash", "Snarl", "Fall", "Kill", "Burn", "Again", "Lurking", "Forget", "Forgotten",
-			"Tumble", "Said", "Drips", "Yellow", "Night", "Sink", "Rise", "Circle", "Flap", "Sing",
-			"Die", "Dissolve", "Scream", "Bloom", "Aches", "Dream", "Open", "Return", "Rots", "Grows"
-		];
-
-		/**
-		 * Converts a 6-character code (e.g., "011530") into a three-word slogan.
-		 * @param {string} code The 6-character string from the database.
-		 * @returns {string} The resulting slogan.
-		 */
-		function convertMantraCode(code) {
-			if (!code || code.length !== 6) {
-				return "SLOGAN UNKNOWN"; // Error handling
-			}
-
-			// Split the code into three 2-digit parts and convert them to numbers
-			const index1 = parseInt(code.substring(0, 2), 10);
-			const index2 = parseInt(code.substring(2, 4), 10);
-			const index3 = parseInt(code.substring(4, 6), 10);
-
-			// Look up the words in the arrays. If an index is bad, default to "???"
-			const w1 = word1[index1] || "???";
-			const w2 = word2[index2] || "???";
-			const w3 = word3[index3] || "???";
-
-			return `${w1} ${w2} ${w3}`;
-		}
-
-		// --- Supabase and Fetching Logic ---
+		// --- Supabase and NEW Fetching Logic ---
 		const supabaseUrl = 'https://opvtdykuviyducakpamk.supabase.co';
 		const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9wdnRkeWt1dml5ZHVjYWtwYW1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc4ODY0MzksImV4cCI6MjA2MzQ2MjQzOX0.m1MshrKJ0MOWLheq_3Yx3Rqpz2NspsrjsYbbYWBUSx8';
 
-		async function fetchLeaderboard() {
-			// Assume your table has a 'top_mantra' column with the 6-character code
-			const apiUrl = `${supabaseUrl}/rest/v1/leaderboard?id=eq.1&select=rank1_player,rank2_player,rank3_player,top_mantra`;
+		// Define the URLs for the two new tables
+		const statsUrl = `${supabaseUrl}/rest/v1/World_Stats?id=eq.1&select=*`;
+		const playersUrl = `${supabaseUrl}/rest/v1/Leaderboard_Players?select=*&order=rank.asc`;
+
+		async function fetchAllData() {
+			const headers = { 'apikey': supabaseKey, 'Authorization': `Bearer ${supabaseKey}` };
 
 			try {
-				const response = await fetch(apiUrl, {
-					headers: { 'apikey': supabaseKey, 'Authorization': `Bearer ${supabaseKey}` }
-				});
-				if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+				// Use Promise.all to fetch both sets of data concurrently
+				const [statsResponse, playersResponse] = await Promise.all([
+					fetch(statsUrl, { headers }),
+					fetch(playersUrl, { headers })
+				]);
 
-				const data = await response.json();
+				if (!statsResponse.ok) throw new Error(`Stats fetch failed: ${statsResponse.status}`);
+				if (!playersResponse.ok) throw new Error(`Players fetch failed: ${playersResponse.status}`);
 
-				if (data.length > 0) {
-					const stats = data[0];
+				const statsData = await statsResponse.json();
+				const playersData = await playersResponse.json();
 
-					// --- THE NEW LOGIC ---
-					// 1. Get the code from the database
-					const mantraCode = stats.top_mantra;
+				// --- Update the UI with the fetched data ---
+				updateWorldStats(statsData);
+				updatePlayerList(playersData);
 
-					// 2. Convert the code to a slogan using our function
-					const sloganText = convertMantraCode(mantraCode);
-
-					// 3. Update the slogan element on the page
-					document.getElementById('slogan_display').innerText = sloganText;
-
-					// Update the rest of the leaderboard
-					document.getElementById('rank1_player').innerText = `#1: ${stats.rank1_player}`;
-					document.getElementById('rank2_player').innerText = `#2: ${stats.rank2_player}`;
-					document.getElementById('rank3_player').innerText = `#3: ${stats.rank3_player}`;
-				}
 			} catch (error) {
-				console.error("Failed to fetch leaderboard:", error);
-				document.getElementById('rank1_player').innerText = "Error loading data.";
+				console.error("Failed to fetch leaderboard data:", error);
 				document.getElementById('slogan_display').innerText = "DATA CORRUPTED";
+				document.getElementById('player_list').innerHTML = "<li>Error loading data.</li>";
 			}
 		}
 
-		fetchLeaderboard();
+		function updateWorldStats(data) {
+			if (data.length === 0) return;
+			const stats = data[0];
+
+			// Update Slogan
+			const mantraCode = stats.top_mantra || "000000";
+			const sloganText = convertMantraCode(mantraCode);
+			document.getElementById('slogan_display').innerText = sloganText;
+
+			// Update Corruption Bar
+			const corruptionLevel = stats.corruption_level || 0;
+			const maxCorruption = 600; // 50 rooms * 12 points
+			const corruptionPercent = (corruptionLevel / maxCorruption) * 100;
+			document.getElementById('corruption_bar').style.width = `${corruptionPercent}%`;
+			document.getElementById('corruption_label').innerText = `${corruptionLevel} / ${maxCorruption}`;
+
+			// Update World Progress Bar
+			const worldProgress = stats.world_timer_progress || 0;
+			const worldProgressPercent = worldProgress * 100;
+			document.getElementById('world_progress_bar').style.width = `${worldProgressPercent}%`;
+			document.getElementById('world_progress_label').innerText = `${Math.floor(worldProgressPercent)}%`;
+		}
+
+		function updatePlayerList(players) {
+			const playerListElement = document.getElementById('player_list');
+			playerListElement.innerHTML = ''; // Clear the "Loading..." text
+
+			if (players.length === 0) {
+				playerListElement.innerHTML = '<li>No players ranked yet.</li>';
+				return;
+			}
+
+			players.forEach(player => {
+				const listItem = document.createElement('li');
+				listItem.innerText = `${player.player_name} `;
+				playerListElement.appendChild(listItem);
+			});
+		}
+
+		// Initial fetch when the page loads
+		fetchAllData();
 	</script>
 </body>
 </html>
