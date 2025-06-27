@@ -29,7 +29,7 @@
 			align-items: center;
 			justify-content: center;
 			min-height: 100vh;
-			font-family: 'Trajan', monospace;
+			font-family: 'BirchLeafFont', monospace;
 			margin: 0;
 			padding: 20px;
 			box-sizing: border-box;
@@ -47,8 +47,8 @@
 		.leaderboard {
 			max-width: 900px; /* Increased width for two columns */
 			width: 100%;
-			background-color: rgba(26, 29, 37, 0.9);
-			border: 2px solid #8DA75D;
+			background-color: rgba(102, 0, 66, 0.1);
+			border: 2px solid #000000;
 			border-radius: 0;
 			padding: 25px;
 		}
@@ -64,7 +64,7 @@
 
 		/* --- Typography Styling --- */
 		.slogan {
-			color: #8E8EB2;
+			color: #C757A3;
 			font-size: 2.2em; /* Adjusted for space */
 			margin: 0 0 25px 0;
 			text-align: center;
@@ -73,7 +73,7 @@
 		}
 
 		h2 {
-			color: #c3c3c3;
+			color: #C75765;
 			font-size: 1.5em;
 			margin: 20px 0 10px 0;
 			text-align: left;
@@ -83,7 +83,7 @@
 
 		/* --- NEW: Player List Styling --- */
 		.player-list {
-			color: #a7a5a7;
+			color: #C757A3;
 			font-size: 2.3em;
 			margin: 5px 0;
 			padding-left: 75px; /* Indent the list */
@@ -92,7 +92,7 @@
 			text-shadow: 1px 1px 2px #000;
 		}
 		.player-list li::marker {
-			color: #8DA75D;
+			color: #C757A3;
 			font-weight: bold;
 
 		}
@@ -101,21 +101,21 @@
 		.progress-bar-container {
 			width: 100%;
 			height: 25px;
-			background-color: #101216;
+			background-color: #000000;
 			border: 1px solid #444;
 			margin-bottom: 5px;
 		}
 		.progress-bar {
 			height: 100%;
-			background-color: #C32656; /* Corruption color */
+			background-color: #C757A3; /* Corruption color */
 			width: 0%; /* Will be set by JavaScript */
 			transition: width 0.5s ease-in-out;
 		}
 		.progress-bar.world-progress {
-			background-color: #8DA75D; /* World progress color */
+			background-color: #C757A3; /* World progress color */
 		}
 		.progress-label {
-			color: #7B787B;
+			color: #C757A3;
 			font-size: 0.9em;
 			text-align: right;
 		}
@@ -125,13 +125,13 @@
 			display: block;
 			text-align: center;
 			margin-top: 30px;
-			color: #7B787B;
+			color: #C757A3;
 			font-size: 3.5em;
 			text-shadow: 2px 2px 4px #000;
 		}
 
 		.download-link:hover {
-			color: #C32656;
+			color: #000000;
 			text-decoration: underline;
 		}
 	</style>
@@ -147,13 +147,13 @@
 				<h2>Daily Quote</h2>
 				<h3 id="slogan_display" class="slogan">...</h3>
 
-				<h2>Corruption Level</h2>
+				<h2>Corruption</h2>
 				<div class="progress-bar-container">
 					<div id="corruption_bar" class="progress-bar"></div>
 				</div>
 				<p id="corruption_label" class="progress-label">Loading...</p>
 
-				<h2>Time Until Midnight</h2>
+				<h2>Time</h2>
 				<div class="progress-bar-container">
 					<div id="world_progress_bar" class="progress-bar world-progress"></div>
 				</div>
