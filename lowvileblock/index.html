@@ -178,7 +178,7 @@
 	<script>
 		// --- Word Arrays for Mantra Conversion (Unchanged) ---
 		const word1=["","Hard","Behold","Dead","The","Awaken","Dripping","Glowing","Pale","Dancing","Again","Cute","Kill","Betray","Let","Sorry","Me","We","Soft","Tasty","No","Yield","Strange","King","Twin","Dark","Dead","Egg","Sharp","My","Your"];const word2=["","Snake","Ear","Ointment","Sirens","Barrel","Slugs","Girls","Bleeding","Fumes","Again","Rulers","Climbers","Guests","Torgo","Meat","They","Varnish","Liquid","Moisture","Drippings","In","The","Suns","Stars","Moons","Tears","Voices","Tongue","Mother","Puppet"];const word3=["","Bleed","Crash","Snarl","Fall","Kill","Burn","Again","Lurking","Forget","Forgotten","Tumble","Said","Drips","Yellow","Night","Sink","Rise","Circle","Flap","Sing","Die","Dissolve","Scream","Bloom","Aches","Dream","Open","Return","Rots","Grows"];
-		function convertMantraCode(code){if(!code||code.length!==6){return"SLOGAN UNKNOWN";}const index1=parseInt(code.substring(0,2),10);const index2=parseInt(code.substring(2,4),10);const index3=parseInt(code.substring(4,6),10);const w1=word1[index1]||"???";const w2=word2[index2]||"???";const w3=word3[index3]||"???";return`${w1} ${w2} ${w3}`;}
+		function convertMantraCode(code){if(!code||code.length!==6){return"?????";}const index1=parseInt(code.substring(0,2),10);const index2=parseInt(code.substring(2,4),10);const index3=parseInt(code.substring(4,6),10);const w1=word1[index1]||"???";const w2=word2[index2]||"???";const w3=word3[index3]||"???";return`${w1} ${w2} ${w3}`;}
 
 		// --- Supabase and NEW Fetching Logic ---
 		const supabaseUrl = 'https://opvtdykuviyducakpamk.supabase.co';
