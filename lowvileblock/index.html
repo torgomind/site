@@ -229,7 +229,7 @@
 			const maxCorruption = 600; // 50 rooms * 12 points
 			const corruptionPercent = (corruptionLevel / maxCorruption) * 100;
 			document.getElementById('corruption_bar').style.width = `${corruptionPercent}%`;
-			document.getElementById('corruption_label').innerText = `${corruptionLevel} / ${maxCorruption}`;
+			document.getElementById('corruption_label').innerText = `${Math.floor(corruptionPercent)}%`;
 
 			// Update World Progress Bar
 			const worldProgress = stats.world_timer_progress || 0;
