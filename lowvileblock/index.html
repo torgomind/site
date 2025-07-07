@@ -13,6 +13,10 @@
 			font-family: 'BirchLeafFont';
             src: url('../assets/BirchLeaf.ttf') format('truetype');
 		}
+		@font-face {
+			font-family: 'Digital7';
+            src: url('../assets/digital7.ttf') format('truetype');
+		}
 
 		/* --- Global Styles & Background --- */
 		html {
@@ -83,8 +87,9 @@
 
 		/* --- Player List Styling --- */
 		.player-list {
+			font-family: 'Digital7';
 			color: #C757A3;
-			font-size: 2.3em;
+			font-size: 2.8em;
 			margin: 5px 0;
 			padding-left: 75px; /* Indent the list */
 			line-height: 1.6;
@@ -254,8 +259,8 @@
 
 		// Define the URLs for the three tables
 		const statsUrl = `${supabaseUrl}/rest/v1/World_Stats?id=eq.1&select=*`;
-		const playersRecentUrl = `${supabaseUrl}/rest/v1/Leaderboard_Recent?select=*&order=rank.asc`;
-		const playersAllTimeUrl = `${supabaseUrl}/rest/v1/Leaderboard_AllTime?select=*&order=rank.asc`;
+		const playersRecentUrl = `${supabaseUrl}/rest/v1/Leaderboard_Recent?select=*&order=rank.asc&limit=10`;
+		const playersAllTimeUrl = `${supabaseUrl}/rest/v1/Leaderboard_AllTime?select=*&order=rank.asc&limit=10`;
 
 		async function fetchAllData() {
 			const headers = { 'apikey': supabaseKey, 'Authorization': `Bearer ${supabaseKey}` };
@@ -323,7 +328,7 @@
 
 			players.forEach(player => {
 				const listItem = document.createElement('li');
-				listItem.innerText = `${player.player_name} `;
+				listItem.innerText = `${player.player_name} ${player.score || 0}`;
 				playerListElement.appendChild(listItem);
 			});
 		}
