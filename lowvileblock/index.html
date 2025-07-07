@@ -45,7 +45,7 @@
 
 		/* --- Panel Style --- */
 		.leaderboard {
-			max-width: 900px; /* Increased width for two columns */
+			max-width: 1200px; /* Increased width for three columns */
 			width: 100%;
 			background-color: rgba(102, 0, 66, 0.1);
 			border: 2px solid #000000;
@@ -53,10 +53,10 @@
 			padding: 25px;
 		}
 
-		/* --- NEW: Two-Column Layout --- */
+		/* --- THREE-Column Layout --- */
 		.leaderboard-content {
 			display: flex;
-			gap: 40px; /* Space between columns */
+			gap: 30px; /* Space between columns */
 		}
 		.column {
 			flex: 1; /* Each column takes up equal space */
@@ -81,7 +81,7 @@
 			padding-bottom: 5px;
 		}
 
-		/* --- NEW: Player List Styling --- */
+		/* --- Player List Styling --- */
 		.player-list {
 			color: #C757A3;
 			font-size: 2.3em;
@@ -97,7 +97,7 @@
 
 		}
 
-		/* --- NEW: Progress Bar Styling --- */
+		/* --- Progress Bar Styling --- */
 		.progress-bar-container {
 			width: 100%;
 			height: 25px;
@@ -145,6 +145,41 @@
 		.file-info a {
             color: #444; /* Darker color to match other text */
         }
+
+		/* --- Trailer Link Styling --- */
+		.trailer-link {
+			display: block;
+			text-align: center;
+			margin-top: 20px;
+			margin-bottom: -20px;
+			color: #C757A3;
+			font-size: 1.7em; /* Slightly smaller than download link */
+			text-shadow: 2px 2px 4px #000;
+			cursor: pointer;
+		}
+
+		.trailer-link:hover {
+			color: #000000;
+			text-decoration: underline;
+		}
+
+		/* --- Video Container Styling --- */
+		.video-container {
+			position: relative;
+			padding-bottom: 56.25%; /* 16:9 aspect ratio */
+			height: 0;
+			overflow: hidden;
+			margin: 20px auto;
+			max-width: 800px;
+			display: none; /* Hidden by default */
+		}
+		.video-container iframe {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+		}
 	</style>
 </head>
 <body>
@@ -171,23 +206,37 @@
 				<p id="world_progress_label" class="progress-label">Loading...</p>
 			</div>
 
-			<!-- Column 2: Top Players -->
+			<!-- Column 2: Recent Top Players -->
 			<div class="column">
-				<h2>Top Players</h2>
-				<ol id="player_list" class="player-list">
+				<h2>Recent Guests</h2>
+				<ol id="player_list_recent" class="player-list">
+					<li>Loading...</li>
+				</ol>
+			</div>
+
+			<!-- Column 3: All-Time Top Players -->
+			<div class="column">
+				<h2>Permanent Residents</h2>
+				<ol id="player_list_alltime" class="player-list">
 					<li>Loading...</li>
 				</ol>
 			</div>
 		</div>
 
-		<a href="#" class="download-link" onclick="alert('Currently undergoing updates and maintenance.')">Server Currently Offline</a>
-		<!--<a href="https://mega.nz/file/xYw2nJIQ#cyTYXXrzdri1oFkL8nfexAU3buFYHJC6Wiu4PGg2X_U" class="download-link">Download v0.13</a>-->
+		<a href="#" class="trailer-link" onclick="toggleTrailer()">Watch Trailer Video</a>
+
+		<div id="video-container" class="video-container">
+			<iframe src="https://www.youtube.com/embed/DSfNpiF-Ae0?si=efRav4Fs5PNr8c0S" frameborder="0" allowfullscreen></iframe>
+		</div>
+
+		<!--<a href="#" class="download-link" onclick="alert('Currently undergoing updates and maintenance.')">Server Currently Offline</a>-->
+		<a href="https://mega.nz/file/QFoyxZiJ#ATwFdXeTOEDcpDtlB0tD1UTsT5956yxWqnJnGga2OcU" class="download-link">Download v0.14</a>
 
 		<div class="file-info">
-            SHA-256 Hash: 59d4f7d6fe7ccfa684c5211f51aaf3215552d72cf18887e465661f17119e50f4
+            SHA-256 Hash: ae2a36b3194d638e69b2a3757d4ca84cb02483e422513b6559868074aa81ee4e
         </div>
         <div class="file-info">
-            <a href="https://www.virustotal.com/gui/file/59d4f7d6fe7ccfa684c5211f51aaf3215552d72cf18887e465661f17119e50f4/">VirusTotal Scan Result</a>
+            <a href="https://www.virustotal.com/gui/file/ae2a36b3194d638e69b2a3757d4ca84cb02483e422513b6559868074aa81ee4e/">VirusTotal Scan Result</a>
         </div>
 
 
@@ -203,34 +252,40 @@
 		const supabaseUrl = 'https://opvtdykuviyducakpamk.supabase.co';
 		const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9wdnRkeWt1dml5ZHVjYWtwYW1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc4ODY0MzksImV4cCI6MjA2MzQ2MjQzOX0.m1MshrKJ0MOWLheq_3Yx3Rqpz2NspsrjsYbbYWBUSx8';
 
-		// Define the URLs for the two new tables
+		// Define the URLs for the three tables
 		const statsUrl = `${supabaseUrl}/rest/v1/World_Stats?id=eq.1&select=*`;
-		const playersUrl = `${supabaseUrl}/rest/v1/Leaderboard_Players?select=*&order=rank.asc`;
+		const playersRecentUrl = `${supabaseUrl}/rest/v1/Leaderboard_Recent?select=*&order=rank.asc`;
+		const playersAllTimeUrl = `${supabaseUrl}/rest/v1/Leaderboard_AllTime?select=*&order=rank.asc`;
 
 		async function fetchAllData() {
 			const headers = { 'apikey': supabaseKey, 'Authorization': `Bearer ${supabaseKey}` };
 
 			try {
-				// Use Promise.all to fetch both sets of data concurrently
-				const [statsResponse, playersResponse] = await Promise.all([
+				// Use Promise.all to fetch all three sets of data concurrently
+				const [statsResponse, playersRecentResponse, playersAllTimeResponse] = await Promise.all([
 					fetch(statsUrl, { headers }),
-					fetch(playersUrl, { headers })
+					fetch(playersRecentUrl, { headers }),
+					fetch(playersAllTimeUrl, { headers })
 				]);
 
 				if (!statsResponse.ok) throw new Error(`Stats fetch failed: ${statsResponse.status}`);
-				if (!playersResponse.ok) throw new Error(`Players fetch failed: ${playersResponse.status}`);
+				if (!playersRecentResponse.ok) throw new Error(`Recent players fetch failed: ${playersRecentResponse.status}`);
+				if (!playersAllTimeResponse.ok) throw new Error(`All-time players fetch failed: ${playersAllTimeResponse.status}`);
 
 				const statsData = await statsResponse.json();
-				const playersData = await playersResponse.json();
+				const playersRecentData = await playersRecentResponse.json();
+				const playersAllTimeData = await playersAllTimeResponse.json();
 
 				// --- Update the UI with the fetched data ---
 				updateWorldStats(statsData);
-				updatePlayerList(playersData);
+				updatePlayerList(playersRecentData, 'player_list_recent');
+				updatePlayerList(playersAllTimeData, 'player_list_alltime');
 
 			} catch (error) {
 				console.error("Failed to fetch leaderboard data:", error);
 				document.getElementById('slogan_display').innerText = "DATA CORRUPTED";
-				document.getElementById('player_list').innerHTML = "<li>Error loading data.</li>";
+				document.getElementById('player_list_recent').innerHTML = "<li>Error loading data.</li>";
+				document.getElementById('player_list_alltime').innerHTML = "<li>Error loading data.</li>";
 			}
 		}
 
@@ -257,8 +312,8 @@
 			document.getElementById('world_progress_label').innerText = `${Math.floor(worldProgressPercent)}%`;
 		}
 
-		function updatePlayerList(players) {
-			const playerListElement = document.getElementById('player_list');
+		function updatePlayerList(players, elementId) {
+			const playerListElement = document.getElementById(elementId);
 			playerListElement.innerHTML = ''; // Clear the "Loading..." text
 
 			if (players.length === 0) {
@@ -275,6 +330,20 @@
 
 		// Initial fetch when the page loads
 		fetchAllData();
+
+		// --- Trailer Toggle Function ---
+		function toggleTrailer() {
+			const videoContainer = document.getElementById('video-container');
+			const trailerLink = document.querySelector('.trailer-link');
+
+			if (videoContainer.style.display === 'none' || videoContainer.style.display === '') {
+				videoContainer.style.display = 'block';
+				trailerLink.innerText = 'Hide Trailer';
+			} else {
+				videoContainer.style.display = 'none';
+				trailerLink.innerText = 'Watch the Trailer';
+			}
+		}
 	</script>
 </body>
 </html>
