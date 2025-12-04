@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Good Games</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0f0f0f;
+            color: #fff;
+            padding: 40px 20px;
+        }
+		@font-face {
+			font-family: 'MyFont';
+			src: url('fonts/myfont.ttf') format('truetype');
+			font-weight: normal;
+			font-style: normal;
+		}
+
+		body, button {
+			font-family: 'MyFont', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+		}
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #95FF78;
+            font-size: 2.5em;
+        }
+        .button-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            background: #95FF78;
+            border: none;
+            border-radius: 5px;
+            color: #0f0f0f;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #00aacc;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .game-card {
+            background: #1a1a1a;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 212, 255, 0.3);
+        }
+        .game-card img {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            display: block;
+        }
+        .game-info {
+            padding: 15px;
+        }
+        .game-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #C2FFBA;
+        }
+        .game-year {
+            font-size: 14px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>List Of Games</h1>
+        <div class="button-container">
+            <button onclick="sortByRank()">RANK</button>
+            <button onclick="sortByYear()">YEAR</button>
+            <button onclick="sortByTitle()">A-Z</button>
+        </div>
+        <div class="grid" id="grid"></div>
+    </div>
+
+    <script>
+        const games = [
+            { title: "Rain World", image: "rainworld2017.webp", year: 2017 },
+            { title: "Dark Souls", image: "darksouls2011.webp", year: 2011 },
+            { title: "Fear And Hunger", image: "funger2018.webp", year: 2018 },
+            { title: "Bloodborne", image: "bloodborne2015.webp", year: 2015 },    
+            { title: "King's Field 4", image: "kf4tac2001.webp", year: 2001 },
+            { title: "Demon's Souls", image: "demonssouls.webp", year: 2009 },
+            { title: "ICO", image: "ico2001.webp", year: 2001 },
+            { title: "Dwarf Fortress", image: "dwarffortress2006.webp", year: 2006 },
+            { title: "Caves of Qud", image: "coq2015.webp", year: 2015 },
+            { title: "Diablo", image: "diablo1997.webp", year: 1997 },
+            { title: "Slay The Spire", image: "sire2017.webp", year: 2017 },
+            { title: "Divine Divinity", image: "divinedivinity2002.webp", year: 2002 },
+            { title: "Drod: Gunthro", image: "gunthro2012.webp", year: 2012 },
+            { title: "S.T.A.L.K.E.R. Call of Pripyat", image: "stalker2009.webp", year: 2009 },
+            { title: "Miasmata", image: "miasmata2012.webp", year: 2012 },
+            { title: "Saya No Uta", image: "sayanouta2019.jpg", year: 2019 },
+            { title: "Stasis: Bone Totem", image: "bonetotem2023.webp", year: 2023 },
+            { title: "Riven", image: "riven1997.webp", year: 1997 },
+            { title: "Darkmaus", image: "darmkmaus2016.webp", year: 2016 },
+            { title: "Salt and Sanctuary", image: "saltandsanc2016.webp", year: 2016 },
+            { title: "Devil Daggers", image: "devildagger2016.webp", year: 2016 },
+            { title: "Thief Gold", image: "thiefgold.webp", year: 1998 },
+            { title: "Longest Journey", image: "longest1999.webp", year: 1999 },
+            { title: "Arcanum", image: "arcanum2001.webp", year: 2001 },
+            { title: "Theme Hospital", image: "themehosp1997.webp", year: 1997 },
+            { title: "Abaddon: Princess of the Decay", image: "abaddon2021.webp", year: 2021 },
+            { title: "Mystic Towers", image: "mystic1993.webp", year: 1993 },
+            { title: "Mu Cartographer", image: "mucartog2016.webp", year: 2016 },
+            { title: "Dead Space", image: "deadspace2008.webp", year: 2008 },
+            { title: "Naissance", image: "naissancee2014.webp", year: 2014 },
+            { title: "Gods", image: "gods1991.webp", year: 1991 },
+            { title: "Oneshot", image: "oneshot2016.webp", year: 2016 },
+            { title: "The Nomad Soul", image: "nomadsoul1999.webp", year: 1999 },
+            { title: "Labyrinth of the Demon King", image: "laby2025.webp", year: 2025 },
+            { title: "Penko Park", image: "penko2020.webp", year: 2020 },
+            { title: "XCOM", image: "xcom1994.webp", year: 1994 },
+            { title: "Malebolgia", image: "malebolgia2015.webp", year: 2015 },
+            { title: "Northern Journey", image: "northern2021.webp", year: 2021 },
+            { title: "Stars Die", image: "starsdie2018.webp", year: 2018 },
+            { title: "Hylics", image: "hylics2015.webp", year: 2015 },
+            { title: "Aquatic Adventure of Last Human", image: "aquatic2016.webp", year: 2016 },
+            { title: "Momodora", image: "momodora2016.webp", year: 2016 },
+            { title: "Fight Knight", image: "fight_knight_2021.webp", year: 2021 },
+            { title: "Wuppo", image: "wuppo2016.webp", year: 2016 },
+            { title: "Below", image: "below2018.webp", year: 2018 },
+            { title: "Arx Fatalis", image: "arxfatalis2002.webp", year: 2002 },
+            { title: "System Shock", image: "systemshock2023.webp", year: 2023 },
+            { title: "System Shock 2", image: "systemshock2_1999.webp", year: 1999 },
+            { title: "Sundered", image: "sundered2017.webp", year: 2017 },
+            { title: "Resident Evil", image: "resident2002.webp", year: 2002 },
+            { title: "Pathologic", image: "pathologic2005.webp", year: 2005 },
+            { title: "Alien: Isolation", image: "alienisolation2014.webp", year: 2014 },
+            { title: "Darkwood", image: "darkwood2014.webp", year: 2014 },
+            { title: "Stephen's Sausage Roll", image: "stephen2016.webp", year: 2016 },
+            { title: "The Longing", image: "thelonging2020.webp", year: 2020 },
+            { title: "Cataclysm: Dark Days Ahead", image: "cataclysm2013.webp", year: 2013 },
+            { title: "TowerClimb", image: "towerclimb2015.jpg", year: 2015 },
+            { title: "QBEH-1 The Atlas Cube", image: "qbeh2014.webp", year: 2014 },
+            { title: "Noita", image: "noita2019.webp", year: 2019 },
+            { title: "Thumper", image: "thumper2016.webp", year: 2016 },
+            { title: "Nuclear Throne", image: "nuclearthrone2013.webp", year: 2013 },
+            { title: "Hugo's House of Horrors", image: "hugo1990.webp", year: 1990 },
+            { title: "Cosmo's Cosmic Adventure", image: "cosmo1992.webp", year: 1992 },
+        ];
+
+        const grid = document.getElementById('grid');
+        const originalGames = [...games];
+
+        function renderGames(gamesToRender, showRank = false) {
+            grid.innerHTML = '';
+            gamesToRender.forEach((game, index) => {
+                const card = document.createElement('div');
+                card.className = 'game-card';
+                const title = showRank ? `${index + 1}. ${game.title}` : game.title;
+                card.innerHTML = `
+                    <img src="img/${game.image}" alt="${game.title}">
+                    <div class="game-info">
+                        <div class="game-title">${title}</div>
+                        <div class="game-year">${game.year}</div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function sortByRank() {
+            renderGames(originalGames, true);
+        }
+
+        function sortByYear() {
+            const sorted = [...games].sort((a, b) => a.year - b.year);
+            renderGames(sorted);
+        }
+
+        function sortByTitle() {
+            const sorted = [...games].sort((a, b) => a.title.localeCompare(b.title));
+            renderGames(sorted);
+        }
+
+        // Initial render
+        sortByRank();
+    </script>
+</body>
+</html>
