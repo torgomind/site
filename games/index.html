@@ -55,10 +55,20 @@
             background: #00aacc;
         }
         .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 20px;
-        }
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+			gap: 16px;
+		}
+		@media (max-width: 768px) {
+			.grid {
+				grid-template-columns: repeat(3, 1fr);
+			}
+		}
+		@media (max-width: 480px) {
+			.game-card img {
+				height: 220px;
+			}
+		}
         .game-card {
             background: #1a1a1a;
             border-radius: 8px;
