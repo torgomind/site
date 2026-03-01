@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>∞ sketch</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #eee; overflow: hidden; font-family: 'Courier New', monospace; }
+  #canvas { display: block; cursor: crosshair; image-rendering: pixelated; }
+  #ui {
+    position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 8px; align-items: center;
+    background: rgba(20,20,20,0.92); border: 1px solid #333;
+    padding: 8px 14px; border-radius: 6px; user-select: none;
+    backdrop-filter: blur(4px);
+  }
+  .btn {
+    background: #222; border: 1px solid #444; color: #ccc;
+    padding: 4px 10px; border-radius: 4px; cursor: pointer;
+    font-family: inherit; font-size: 12px; transition: all 0.1s;
+  }
+  .btn:hover { background: #2a2a2a; border-color: #666; }
+  .btn.active { background: #ddd; color: #111; border-color: #ddd; }
+  .sep { width: 1px; height: 20px; background: #333; }
+  label { color: #888; font-size: 11px; }
+  input[type=range] { width: 80px; accent-color: #aaa; cursor: pointer; }
+  #coords { color: #555; font-size: 11px; min-width: 100px; }
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="ui">
+  <button class="btn active" id="btn-draw">✏ draw</button>
+  <button class="btn" id="btn-erase">◻ erase</button>
+  <button class="btn" id="btn-select">⬚ select</button>
+  <button class="btn" id="btn-invert">◑ invert</button>
+  <div class="sep"></div>
+  <label>size</label>
+  <input type="range" id="brush-size" min="1" max="64" value="4">
+  <label>opacity</label>
+  <input type="range" id="brush-shade" min="1" max="15" value="2">
+  <div class="sep"></div>
+  <button class="btn" id="btn-zoomin">＋</button>
+  <button class="btn" id="btn-zoomreset">1:1</button>
+  <button class="btn" id="btn-zoomout">－</button>
+  <div class="sep"></div>
+  <button class="btn" id="btn-export">↓ png</button>
+  <div class="sep"></div>
+  <button class="btn" id="btn-ref">⊕ ref</button>
+  <button class="btn" id="btn-ref-up">ref＋</button>
+  <button class="btn" id="btn-ref-dn">ref－</button>
+  <input type="file" id="ref-input" accept="image/*" style="display:none">
+  <div class="sep"></div>
+  <span id="coords">0, 0</span>
+</div>
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+const CHUNK = 256;
+const chunks = new Map();
+const dirtyChunks = new Set();
+const chunkImageCache = new Map();
+
+let viewX = 0, viewY = 0, zoom = 2;
+let tool = 'draw';
+let brushSize = 4, brushShade = 2;
+let inverted = false;
+
+let isPainting = false;
+let lastPX = 0, lastPY = 0;
+let strokeVisited = new Set();
+
+let isPanning = false, spaceDown = false;
+let panStartX = 0, panStartY = 0, panOriginX = 0, panOriginY = 0;
+
+let sel = null;
+
+function chunkKey(cx, cy) { return cx + ',' + cy; }
+
+function getChunk(cx, cy) {
+  const k = chunkKey(cx, cy);
+  if (!chunks.has(k)) chunks.set(k, new Uint8Array(CHUNK * CHUNK));
+  return chunks.get(k);
+}
+
+function getPixel(x, y) {
+  const cx = Math.floor(x / CHUNK), cy = Math.floor(y / CHUNK);
+  const k = chunkKey(cx, cy);
+  if (!chunks.has(k)) return 0;
+  const lx = ((x % CHUNK) + CHUNK) % CHUNK, ly = ((y % CHUNK) + CHUNK) % CHUNK;
+  return chunks.get(k)[ly * CHUNK + lx];
+}
+
+function setPixelAbs(x, y, v) {
+  const cx = Math.floor(x / CHUNK), cy = Math.floor(y / CHUNK);
+  const lx = ((x % CHUNK) + CHUNK) % CHUNK, ly = ((y % CHUNK) + CHUNK) % CHUNK;
+  const chunk = getChunk(cx, cy);
+  chunk[ly * CHUNK + lx] = Math.max(0, Math.min(15, v));
+  dirtyChunks.add(chunkKey(cx, cy));
+}
+
+function setPixelAdd(x, y, delta) {
+  const cx = Math.floor(x / CHUNK), cy = Math.floor(y / CHUNK);
+  const lx = ((x % CHUNK) + CHUNK) % CHUNK, ly = ((y % CHUNK) + CHUNK) % CHUNK;
+  const chunk = getChunk(cx, cy);
+  const idx = ly * CHUNK + lx;
+  chunk[idx] = Math.max(0, Math.min(15, chunk[idx] + delta));
+  dirtyChunks.add(chunkKey(cx, cy));
+}
+
+function dirtyAll() {
+  for (const k of chunks.keys()) dirtyChunks.add(k);
+}
+
+function screenToWorld(sx, sy) {
+  return [(sx - canvas.width / 2) / zoom + viewX, (sy - canvas.height / 2) / zoom + viewY];
+}
+
+function pixelToScreen(px, py) {
+  return [(px - viewX) * zoom + canvas.width / 2, (py - viewY) * zoom + canvas.height / 2];
+}
+
+function renderChunk(cx, cy) {
+  const k = chunkKey(cx, cy);
+  const data = chunks.get(k);
+  if (!data) return null;
+  let img = chunkImageCache.get(k);
+  if (!img) {
+    img = ctx.createImageData(CHUNK, CHUNK);
+    chunkImageCache.set(k, img);
+  }
+  const d = img.data;
+  for (let i = 0; i < CHUNK * CHUNK; i++) {
+    const t = data[i] / 15;
+    if (inverted) {
+      d[i*4]=255; d[i*4+1]=255; d[i*4+2]=255; d[i*4+3]=(t * 255 | 0);
+    } else {
+      d[i*4]=0; d[i*4+1]=0; d[i*4+2]=0; d[i*4+3]=(t * 255 | 0);
+    }
+  }
+  return img;
+}
+
+
+// ── REFERENCE IMAGE ─────────────────────────────────────────────────────────
+let refImg = null, refOpacity = 0.3;
+
+function refLoad(file) {
+  const url = URL.createObjectURL(file);
+  const img = new Image();
+  img.onload = () => { refImg = img; URL.revokeObjectURL(url); };
+  img.src = url;
+}
+
+function drawRef(hw, hh) {
+  if (!refImg) return;
+  const sx = Math.floor(-viewX * zoom + hw - (refImg.width  * zoom) / 2);
+  const sy = Math.floor(-viewY * zoom + hh - (refImg.height * zoom) / 2);
+  ctx.save();
+  ctx.globalAlpha = refOpacity;
+  ctx.imageSmoothingEnabled = true;
+  ctx.drawImage(refImg, sx, sy, refImg.width * zoom, refImg.height * zoom);
+  ctx.restore();
+  ctx.imageSmoothingEnabled = false;
+}
+// ── END REFERENCE IMAGE ──────────────────────────────────────────────────────
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  ctx.imageSmoothingEnabled = false;
+  dirtyAll();
+}
+
+function frame() {
+  ctx.imageSmoothingEnabled = false;
+  ctx.fillStyle = inverted ? '#111' : '#fff';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  const hw = canvas.width / 2, hh = canvas.height / 2;
+  drawRef(hw, hh);
+  const left   = Math.floor((viewX - hw / zoom) / CHUNK) - 1;
+  const right  = Math.ceil((viewX + hw / zoom) / CHUNK) + 1;
+  const top    = Math.floor((viewY - hh / zoom) / CHUNK) - 1;
+  const bottom = Math.ceil((viewY + hh / zoom) / CHUNK) + 1;
+
+  for (let cy = top; cy < bottom; cy++) {
+    for (let cx = left; cx < right; cx++) {
+      const k = chunkKey(cx, cy);
+      if (!chunks.has(k)) continue;
+      if (dirtyChunks.has(k)) { chunkImageCache.delete(k); dirtyChunks.delete(k); }
+      const img = renderChunk(cx, cy);
+      if (!img) continue;
+      const off = new OffscreenCanvas(CHUNK, CHUNK);
+      const oc = off.getContext('2d');
+      oc.imageSmoothingEnabled = false;
+      oc.putImageData(img, 0, 0);
+      const sx = Math.round((cx * CHUNK - viewX) * zoom + hw);
+      const sy = Math.round((cy * CHUNK - viewY) * zoom + hh);
+      const ex = Math.round(((cx + 1) * CHUNK - viewX) * zoom + hw);
+      const ey = Math.round(((cy + 1) * CHUNK - viewY) * zoom + hh);
+      ctx.drawImage(off, sx, sy, ex - sx, ey - sy);
+    }
+  }
+
+  if (sel) {
+    if (sel.phase === 'floating') {
+      const off2 = new OffscreenCanvas(sel.w, sel.h);
+      const oc2 = off2.getContext('2d');
+      const img2 = oc2.createImageData(sel.w, sel.h);
+      for (let i = 0; i < sel.w * sel.h; i++) {
+        const t = sel.buf[i] / 15;
+        if (inverted) {
+          img2.data[i*4]=255; img2.data[i*4+1]=255; img2.data[i*4+2]=255; img2.data[i*4+3]=(t*255|0);
+        } else {
+          img2.data[i*4]=0; img2.data[i*4+1]=0; img2.data[i*4+2]=0; img2.data[i*4+3]=(t*255|0);
+        }
+      }
+      oc2.putImageData(img2, 0, 0);
+      const [sx, sy] = pixelToScreen(sel.x, sel.y);
+      ctx.drawImage(off2, sx, sy, sel.w * zoom, sel.h * zoom);
+    }
+
+    const bx = sel.phase === 'floating' ? sel.x : Math.min(sel.x0, sel.x1);
+    const by = sel.phase === 'floating' ? sel.y : Math.min(sel.y0, sel.y1);
+    const bw = sel.phase === 'floating' ? sel.w : Math.abs(sel.x1 - sel.x0);
+    const bh = sel.phase === 'floating' ? sel.h : Math.abs(sel.y1 - sel.y0);
+    const [ssx, ssy] = pixelToScreen(bx, by);
+    ctx.save();
+    ctx.strokeStyle = inverted ? '#fff' : '#000';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 4]);
+    ctx.strokeRect(ssx, ssy, bw * zoom, bh * zoom);
+    ctx.restore();
+  }
+
+  requestAnimationFrame(frame);
+}
+
+function paintLine(x0, y0, x1, y1) {
+  const delta = tool === 'erase' ? -brushShade : brushShade;
+  const dx = x1 - x0, dy = y1 - y0;
+  const steps = Math.max(Math.abs(dx), Math.abs(dy), 1);
+  const r = Math.max(0, Math.floor(brushSize / 2));
+  for (let i = 0; i <= steps; i++) {
+    const t = i / steps;
+    const cx = Math.round(x0 + dx * t);
+    const cy = Math.round(y0 + dy * t);
+    for (let by = -r; by <= r; by++) {
+      for (let bx = -r; bx <= r; bx++) {
+        if (bx*bx + by*by <= r*r + r) {
+          const k = (cx+bx) + '|' + (cy+by);
+          if (!strokeVisited.has(k)) {
+            strokeVisited.add(k);
+            setPixelAdd(cx+bx, cy+by, delta);
+          }
+        }
+      }
+    }
+  }
+}
+
+function commitSel() {
+  if (!sel || sel.phase !== 'floating') return;
+  for (let y = 0; y < sel.h; y++)
+    for (let x = 0; x < sel.w; x++)
+      setPixelAbs(sel.x + x, sel.y + y, sel.buf[y * sel.w + x]);
+  dirtyAll();
+  sel = null;
+}
+
+canvas.addEventListener('contextmenu', e => e.preventDefault());
+
+canvas.addEventListener('mousedown', e => {
+  if (e.button === 1 || (e.button === 0 && spaceDown)) {
+    isPanning = true;
+    panStartX = e.clientX; panStartY = e.clientY;
+    panOriginX = viewX; panOriginY = viewY;
+    canvas.style.cursor = 'grabbing';
+    return;
+  }
+  if (e.button !== 0) return;
+
+  const [wx, wy] = screenToWorld(e.clientX, e.clientY);
+  const px = Math.floor(wx), py = Math.floor(wy);
+
+  if (tool === 'select') {
+    if (sel && sel.phase === 'floating') {
+      if (px >= sel.x && px < sel.x + sel.w && py >= sel.y && py < sel.y + sel.h) {
+        sel.dragging = true;
+        sel.dragOX = px - sel.x;
+        sel.dragOY = py - sel.y;
+        return;
+      }
+      commitSel();
+    }
+    sel = { phase: 'drawing', x0: px, y0: py, x1: px, y1: py };
+    isPainting = true;
+    return;
+  }
+
+  isPainting = true;
+  strokeVisited = new Set();
+  lastPX = px; lastPY = py;
+  paintLine(px, py, px, py);
+});
+
+canvas.addEventListener('mousemove', e => {
+  const [wx, wy] = screenToWorld(e.clientX, e.clientY);
+  const px = Math.floor(wx), py = Math.floor(wy);
+  document.getElementById('coords').textContent = px + ', ' + py;
+
+  if (isPanning) {
+    viewX = panOriginX + (panStartX - e.clientX) / zoom;
+    viewY = panOriginY + (panStartY - e.clientY) / zoom;
+    return;
+  }
+
+  if (tool === 'select' && sel) {
+    if (sel.dragging) {
+      sel.x = px - sel.dragOX;
+      sel.y = py - sel.dragOY;
+      return;
+    }
+    if (sel.phase === 'drawing' && isPainting) {
+      sel.x1 = px; sel.y1 = py;
+      return;
+    }
+  }
+
+  if (!isPainting) return;
+  paintLine(lastPX, lastPY, px, py);
+  lastPX = px; lastPY = py;
+});
+
+window.addEventListener('mouseup', e => {
+  if (isPanning) {
+    isPanning = false;
+    canvas.style.cursor = spaceDown ? 'grab' : 'crosshair';
+    return;
+  }
+
+  if (tool === 'select' && sel) {
+    if (sel.dragging) { sel.dragging = false; return; }
+    if (sel.phase === 'drawing') {
+      isPainting = false;
+      const x0 = Math.min(sel.x0, sel.x1), y0 = Math.min(sel.y0, sel.y1);
+      const x1 = Math.max(sel.x0, sel.x1), y1 = Math.max(sel.y0, sel.y1);
+      const w = x1 - x0, h = y1 - y0;
+      if (w < 1 || h < 1) { sel = null; return; }
+      const buf = new Uint8Array(w * h);
+      for (let y = 0; y < h; y++)
+        for (let x = 0; x < w; x++)
+          buf[y * w + x] = getPixel(x0 + x, y0 + y);
+      for (let y = y0; y < y1; y++)
+        for (let x = x0; x < x1; x++)
+          setPixelAbs(x, y, 0);
+      dirtyAll();
+      sel = { phase: 'floating', x: x0, y: y0, w, h, buf, dragging: false, dragOX: 0, dragOY: 0 };
+      return;
+    }
+  }
+
+  isPainting = false;
+  strokeVisited = new Set();
+});
+
+window.addEventListener('keydown', e => {
+  if (e.code === 'Space' && !e.repeat) {
+    spaceDown = true;
+    canvas.style.cursor = 'grab';
+    e.preventDefault();
+  }
+  if (e.key === 'Escape') commitSel();
+  if (e.key === 'Delete' && sel && sel.phase === 'floating') sel = null;
+});
+
+window.addEventListener('keyup', e => {
+  if (e.code === 'Space') { spaceDown = false; if (!isPanning) canvas.style.cursor = 'crosshair'; }
+});
+
+document.getElementById('btn-draw').onclick   = () => { commitSel(); setTool('draw'); };
+document.getElementById('btn-erase').onclick  = () => { commitSel(); setTool('erase'); };
+document.getElementById('btn-select').onclick = () => setTool('select');
+document.getElementById('btn-invert').onclick = () => {
+  inverted = !inverted;
+  document.getElementById('btn-invert').classList.toggle('active', inverted);
+  document.body.style.background = inverted ? '#111' : '#eee';
+  dirtyAll();
+};
+document.getElementById('btn-zoomin').onclick    = () => { zoom = Math.min(32, zoom * 2); };
+document.getElementById('btn-zoomout').onclick   = () => { zoom = Math.max(0.25, zoom / 2); };
+document.getElementById('btn-zoomreset').onclick = () => { zoom = 1; };
+document.getElementById('brush-size').oninput    = e => brushSize = +e.target.value;
+document.getElementById('brush-shade').oninput   = e => brushShade = +e.target.value;
+
+document.getElementById('btn-export').onclick = () => {
+  if (chunks.size === 0) return;
+  let minCX = Infinity, minCY = Infinity, maxCX = -Infinity, maxCY = -Infinity;
+  for (const k of chunks.keys()) {
+    const [cx, cy] = k.split(',').map(Number);
+    minCX = Math.min(minCX, cx); minCY = Math.min(minCY, cy);
+    maxCX = Math.max(maxCX, cx); maxCY = Math.max(maxCY, cy);
+  }
+  const w = (maxCX - minCX + 1) * CHUNK, h = (maxCY - minCY + 1) * CHUNK;
+  const exp = new OffscreenCanvas(w, h);
+  const ec = exp.getContext('2d');
+  ec.fillStyle = inverted ? '#000' : '#fff';
+  ec.fillRect(0, 0, w, h);
+  for (const [k, data] of chunks.entries()) {
+    const [cx, cy] = k.split(',').map(Number);
+    const img = ec.createImageData(CHUNK, CHUNK);
+    for (let i = 0; i < CHUNK * CHUNK; i++) {
+      const t = data[i] / 15;
+      const v = inverted ? (t * 255 | 0) : (255 - (t * 255 | 0));
+      img.data[i*4]=v; img.data[i*4+1]=v; img.data[i*4+2]=v; img.data[i*4+3]=255;
+    }
+    ec.putImageData(img, (cx - minCX) * CHUNK, (cy - minCY) * CHUNK);
+  }
+  exp.convertToBlob({ type: 'image/png' }).then(blob => {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'sketch.png';
+    a.click();
+  });
+};
+
+
+document.getElementById('btn-ref').onclick = () => document.getElementById('ref-input').click();
+document.getElementById('ref-input').onchange = e => { if (e.target.files[0]) refLoad(e.target.files[0]); };
+document.getElementById('btn-ref-up').onclick = () => { refOpacity = Math.min(1, +(refOpacity + 0.1).toFixed(1)); };
+document.getElementById('btn-ref-dn').onclick = () => { refOpacity = Math.max(0, +(refOpacity - 0.1).toFixed(1)); };
+
+function setTool(t) {
+  tool = t;
+  document.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('btn-' + t).classList.add('active');
+}
+
+canvas.addEventListener('wheel', e => {
+  e.preventDefault();
+  viewX += e.deltaX / zoom;
+  viewY += e.deltaY / zoom;
+}, { passive: false });
+
+window.addEventListener('resize', resize);
+resize();
+frame();
+</script>
+</body>
+</html>
