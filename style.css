@@ -1,8 +1,24 @@
 @font-face {
     font-family: 'BirchLeaf';
-    src: url('assets/BirchLeaf.ttf') format('truetype');
+    src: url('assets/newspaper.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
+}
+
+:root {
+	--color-primary: #bba2a9;
+    --color-primary-dark: #853a3a;
+    --color-text-light: #FFFFE5;
+    --color-text-muted: #f7f7f7;
+    --color-text-body: #999999;
+    --color-text-terms: #061F0C;
+    --color-bg-body: #0F0000;
+    --color-bg-card: #071B0E;
+    --color-border-card: #8e7da7;
+    --color-badge-steam-bg: #1b2838;
+    --color-badge-steam-text: #c6d4df;
+    --color-badge-steam-border: #2a475e;
+    --color-badge-itch-bg: #193C1E;
 }
 
 * {
@@ -13,11 +29,11 @@
 
 body {
     font-family: 'BirchLeaf', sans-serif;
-    background-color: #0F0000;
+    background-color: var(--color-bg-body);
     background-image: url('images/meat/background.png');
     background-repeat: repeat;
     background-attachment: fixed;
-    background-size: cover; /* cover or 100%*/
+    background-size: cover;
     background-position: center;
     color: #333;
     line-height: 1.6;
@@ -37,7 +53,7 @@ header {
 .meat-space {
     width: 100%;
     height: auto;
-    max-height: 100px; /* Adjust this value based on your desired maximum height */
+    max-height: 100px;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -54,17 +70,15 @@ header {
     margin: 0 auto;
 }
 
-/* Ensure the meat container doesn't collapse if the meat doesn't load */
 .meat-space::before {
     content: '';
     display: block;
-    padding-top: 25%; /* Adjust this value based on your meat's aspect ratio */
+    padding-top: 25%;
 }
 
-/* Media query for larger screens */
 @media (min-width: 768px) {
     .meat-space {
-        max-height: 150px; /* Larger maximum height for desktop */
+        max-height: 150px;
     }
 }
 
@@ -75,7 +89,7 @@ header {
 }
 
 a {
-    color: #9D4E4C;
+    color: var(--color-primary);
 }
 
 .links {
@@ -89,16 +103,16 @@ a {
 
 .links a {
     font-size: 1.8rem;
-    color: #9D4E4C;
+    color: var(--color-primary);
     text-decoration: none;
     display: inline-flex;
     align-items: center;
-    height: 15px; /* Set a fixed height for all links */
+    height: 15px;
 }
 
 .new-badge {
     position: relative;
-    padding-left: 36px; /* Make space for the "NEW" icon */
+    padding-left: 36px;
 }
 
 .new-badge::before {
@@ -115,11 +129,9 @@ a {
     background-position: center;
 }
 
-
-
 .mail-icon {
     position: relative;
-    padding-right: 28px; /* Make space for the mail icon */
+    padding-right: 28px;
 }
 
 .mail-icon::after {
@@ -137,7 +149,7 @@ a {
 }
 
 .description {
-    color: #504B4B;
+    color: var(--color-text-body);
     font-size: 1.5rem;
     text-align: center;
     margin-bottom: 2rem;
@@ -146,7 +158,7 @@ a {
 
 .video-container {
     position: relative;
-    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    padding-bottom: 56.25%;
     height: 0;
     overflow: hidden;
     margin-bottom: 2rem;
@@ -174,8 +186,7 @@ a {
 .additional-products h3 {
     font-size: 1.5rem;
     margin-bottom: 1rem;
-    color: #9D4E4C;
-    /*color: #504B4B;*/
+    color: var(--color-primary);
 }
 
 .product-list {
@@ -187,7 +198,7 @@ a {
 .product {
     flex: 1 1 calc(50% - 0.5rem);
     text-decoration: none;
-    color: #e9c1c1;
+    color: var(--color-text-light);
 }
 
 .product img {
@@ -201,11 +212,158 @@ a {
     margin-top: 0.5rem;
 }
 
+.capsule-card {
+    flex: 1 1 calc(50% - 0.5rem);
+    text-decoration: none;
+    color: var(--color-text-light);
+    display: flex;
+    flex-direction: column;
+    background-color: var(--color-bg-card);
+    border: 1px solid var(--color-border-card);
+    border-radius: 5px;
+    overflow: hidden;
+    transition: border-color 0.2s ease;
+}
+
+.capsule-card:hover {
+    border-color: var(--color-primary);
+}
+
+.capsule-card img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    display: block;
+}
+
+.capsule-featured {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.capsule-featured img {
+    width: 340px;
+    height: auto;
+    min-height: 180px;
+    max-height: 240px;
+    flex-shrink: 0;
+    object-fit: cover;
+}
+
+.capsule-featured .capsule-info {
+    padding: 1.2rem 1.4rem;
+    justify-content: center;
+}
+
+.capsule-featured .capsule-title {
+    font-size: 2.8rem;
+}
+
+.capsule-featured .capsule-tagline {
+    font-size: 1.1rem;
+    color: var(--color-text-muted);
+}
+
+.earlier-work-heading {
+    font-size: 1.1rem;
+    margin-bottom: 0.75rem;
+    color: var(--color-text-muted);
+}
+
+.product-list-minor {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.capsule-minor {
+    flex: 1 1 calc(33.333% - 0.67rem);
+    opacity: 0.75;
+    transition: border-color 0.2s ease, opacity 0.2s ease;
+}
+
+.capsule-minor:hover {
+    opacity: 1;
+}
+
+.capsule-minor img {
+    height: 100px;
+}
+
+.capsule-minor .capsule-title {
+    font-size: 1.75rem;
+}
+
+.capsule-minor .capsule-tagline {
+    font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+    .capsule-featured {
+        flex-direction: column;
+    }
+
+    .capsule-featured img {
+        width: 100%;
+        height: 160px;
+    }
+
+    .capsule-minor {
+        flex: 1 1 100%;
+    }
+}
+
+.capsule-info {
+    padding: 0.75rem 1rem 1rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.capsule-title {
+    font-size: 1.5rem;
+    color: var(--color-primary);
+    display: block;
+}
+
+.capsule-tagline {
+    font-size: 1.1rem;
+    color: var(--color-text-muted);
+    display: block;
+    line-height: 1.4;
+}
+
+.capsule-badges {
+    display: flex;
+    gap: 0.4rem;
+    margin-top: 0.3rem;
+}
+
+.badge {
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-family: 'BirchLeaf', sans-serif;
+}
+
+.badge-steam {
+    background-color: var(--color-badge-steam-bg);
+    color: var(--color-badge-steam-text);
+    border: 1px solid var(--color-badge-steam-border);
+}
+
+.badge-itch {
+    background-color: var(--color-badge-itch-bg);
+    color: var(--color-text-light);
+    border: 1px solid var(--color-primary-dark);
+}
+
 footer {
     text-align: center;
     margin-top: 2rem;
 }
-
 
 .hit-counter {
     margin-bottom: 1rem;
@@ -213,14 +371,14 @@ footer {
 
 .terms {
     font-size: 0.8rem;
-    color: #1A1818;
+    color: var(--color-text-terms);
     text-align: left;
     line-height: 1;
 }
 
 @media only screen and (max-width: 768px) {
     .terms {
-        font-size: 0.5rem; /* Adjust to a smaller size for mobile */
+        font-size: 0.5rem;
     }
 }
 
@@ -231,6 +389,10 @@ footer {
     }
 
     .product {
+        flex: 1 1 100%;
+    }
+
+    .capsule-card {
         flex: 1 1 100%;
     }
 }
