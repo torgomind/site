@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>dead video search</title>
+<style>
+	*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+	:root {
+		--bg:       #0d0d0f;
+		--surface:  #141417;
+		--raised:   #1a1a1e;
+		--border:   #2a2a30;
+		--border2:  #3a3a42;
+		--text:     #c8c8d0;
+		--muted:    #5a5a66;
+		--dim:      #3a3a44;
+		--accent:   #7c6fa0;
+		--accent2:  #a090c8;
+		--red:      #8b3a3a;
+		--red2:     #c05050;
+		--mono:     'Courier New', Courier, monospace;
+		--sans:     system-ui, -apple-system, sans-serif;
+	}
+
+	html, body {
+		min-height: 100vh;
+		background: var(--bg);
+		color: var(--text);
+		font-family: var(--sans);
+		font-size: 15px;
+		line-height: 1.5;
+	}
+
+	body {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		padding: 2.5rem 1rem 3rem;
+		gap: 2rem;
+	}
+
+	header {
+		text-align: center;
+	}
+
+	header h1 {
+		font-family: var(--mono);
+		font-size: clamp(1.4rem, 5vw, 2.2rem);
+		font-weight: normal;
+		color: var(--accent2);
+		letter-spacing: 0.15em;
+		text-transform: lowercase;
+	}
+
+	header p {
+		font-size: 0.8rem;
+		color: var(--muted);
+		margin-top: 0.4rem;
+		letter-spacing: 0.08em;
+		text-transform: lowercase;
+	}
+
+	.card {
+		width: 100%;
+		max-width: 640px;
+		background: var(--surface);
+		border: 1px solid var(--border);
+		border-radius: 8px;
+	}
+
+	.output-card {
+		padding: 2rem 1.5rem;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 1.2rem;
+		border-color: var(--border2);
+	}
+
+	.term-display {
+		font-family: var(--mono);
+		font-size: clamp(1.8rem, 8vw, 3rem);
+		font-weight: normal;
+		color: #e0ddf0;
+		letter-spacing: 0.08em;
+		text-align: center;
+		min-height: 1.2em;
+		word-break: break-all;
+		line-height: 1.2;
+	}
+
+	.term-display.empty {
+		color: var(--dim);
+	}
+
+	.term-template {
+		font-family: var(--mono);
+		font-size: 0.72rem;
+		color: var(--muted);
+		letter-spacing: 0.1em;
+	}
+
+	.divider {
+		width: 100%;
+		height: 1px;
+		background: var(--border);
+	}
+
+	.btn-row {
+		display: flex;
+		gap: 0.75rem;
+		flex-wrap: wrap;
+		justify-content: center;
+		width: 100%;
+	}
+
+	button {
+		font-family: var(--mono);
+		font-size: 0.85rem;
+		letter-spacing: 0.1em;
+		text-transform: lowercase;
+		padding: 0.65rem 1.6rem;
+		border-radius: 4px;
+		border: 1px solid var(--border2);
+		background: transparent;
+		color: var(--text);
+		cursor: pointer;
+		transition: border-color 0.15s, color 0.15s, background 0.15s;
+		white-space: nowrap;
+	}
+
+	button:hover { border-color: var(--accent); color: var(--accent2); }
+	button:active { background: #1e1a2a; transform: scale(0.97); }
+
+	#gen-btn {
+		border-color: var(--accent);
+		color: var(--accent2);
+		padding: 0.65rem 2.4rem;
+		font-size: 0.95rem;
+	}
+
+	#gen-btn:hover { background: #1e1a2a; }
+
+	#copy-btn.copied { border-color: var(--red); color: var(--red2); }
+
+	#lucky-btn {
+		border-color: var(--red);
+		color: var(--red2);
+	}
+
+	#lucky-btn:hover { background: #1e1010; border-color: var(--red2); }
+
+	.filters-card {
+		padding: 1.2rem 1.5rem;
+	}
+
+	.filters-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 1rem;
+	}
+
+	.filters-header span {
+		font-size: 0.72rem;
+		color: var(--muted);
+		letter-spacing: 0.12em;
+		text-transform: lowercase;
+	}
+
+	.filter-actions {
+		display: flex;
+		gap: 0.5rem;
+	}
+
+	.text-btn {
+		font-family: var(--mono);
+		font-size: 0.68rem;
+		color: var(--muted);
+		background: none;
+		border: none;
+		padding: 0.2rem 0.5rem;
+		cursor: pointer;
+		letter-spacing: 0.08em;
+		border-radius: 3px;
+		transition: color 0.12s;
+	}
+
+	.text-btn:hover { color: var(--accent2); background: transparent; border: none; }
+
+	.section-label {
+		font-size: 0.65rem;
+		letter-spacing: 0.15em;
+		color: var(--dim);
+		text-transform: lowercase;
+		margin-bottom: 0.5rem;
+		padding-left: 2px;
+	}
+
+	.chip-grid {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 6px;
+		margin-bottom: 1rem;
+	}
+
+	.chip {
+		font-family: var(--mono);
+		font-size: 0.72rem;
+		letter-spacing: 0.06em;
+		padding: 5px 10px;
+		border-radius: 3px;
+		border: 1px solid var(--border);
+		background: var(--raised);
+		color: var(--dim);
+		cursor: pointer;
+		transition: border-color 0.12s, color 0.12s, background 0.12s;
+		user-select: none;
+	}
+
+	.chip.active {
+		border-color: var(--accent);
+		color: var(--accent2);
+		background: #1a182a;
+	}
+
+	.chip:hover { border-color: var(--border2); }
+	.chip.active:hover { border-color: var(--accent2); }
+
+	footer {
+		font-size: 0.7rem;
+		color: var(--dim);
+		letter-spacing: 0.06em;
+		text-align: center;
+	}
+
+	@media (max-width: 420px) {
+		body { padding: 1.5rem 0.75rem 2rem; gap: 1.25rem; }
+		.output-card { padding: 1.5rem 1rem; }
+		.filters-card { padding: 1rem; }
+		#gen-btn { width: 100%; }
+		button { flex: 1 1 auto; }
+	}
+</style>
+</head>
+<body>
+
+<header>
+	<h1>dead video search</h1>
+	<p>zero-view youtube term generator</p>
+</header>
+
+<div class="card output-card">
+	<div class="term-display empty" id="term">_ _ _ _ _ _</div>
+	<div class="term-template" id="term-tmpl"></div>
+	<div class="divider"></div>
+	<div class="btn-row">
+		<button id="gen-btn" onclick="generate()">generate</button>
+		<button id="copy-btn" onclick="copyTerm()">copy</button>
+		<button id="lucky-btn" onclick="feelingLucky()">i'm feeling lucky</button>
+	</div>
+</div>
+
+<div class="card filters-card">
+	<div class="filters-header">
+		<span>formats</span>
+		<div class="filter-actions">
+			<button class="text-btn" onclick="setAll(true)">all</button>
+			<button class="text-btn" onclick="setAll(false)">none</button>
+		</div>
+	</div>
+
+	<div class="section-label">numeric — prefix + 0000–9999</div>
+	<div class="chip-grid" id="grid-num"></div>
+
+	<div class="section-label">date — prefix + YYYYMMDD</div>
+	<div class="chip-grid" id="grid-date"></div>
+</div>
+
+<footer>torgomind technology 2026</footer>
+
+<script>
+	const FORMATS = [
+		{ key:"MAQ0",    prefix:"MAQ0",    type:"4digit" },
+		{ key:"MOV",     prefix:"MOV",     type:"4digit" },
+		{ key:"MVI",     prefix:"MVI",     type:"4digit" },
+		{ key:"DSC",     prefix:"DSC",     type:"4digit" },
+		{ key:"CIMG",    prefix:"CIMG",    type:"4digit" },
+		{ key:"M4V0",    prefix:"M4V0",    type:"4digit" },
+		{ key:"VID0",    prefix:"VID0",    type:"4digit" },
+		{ key:"DSCF",    prefix:"DSCF",    type:"4digit" },
+		{ key:"IMG",     prefix:"IMG",     type:"4digit" },
+		{ key:"DSCN",    prefix:"DSCN",    type:"4digit" },
+		{ key:"MAH0",    prefix:"MAH0",    type:"4digit" },
+		{ key:"IMGP",    prefix:"IMGP",    type:"4digit" },
+		{ key:"100",     prefix:"100",     type:"4digit" },
+		{ key:"P100",    prefix:"P100",    type:"4digit" },
+		{ key:"PICT",    prefix:"PICT",    type:"4digit" },
+		{ key:"Capture", prefix:"Capture", type:"date"   },
+		{ key:"WIN",     prefix:"WIN",     type:"date"   },
+		{ key:"WP",      prefix:"WP",      type:"date"   },
+		{ key:"VID",     prefix:"VID",     type:"date"   },
+		{ key:"CAPTURE", prefix:"CAPTURE", type:"date"   },
+	];
+
+	const active = new Set(FORMATS.map(f => f.key));
+	let lastTerm = "";
+
+	function rand4() {
+		return String(Math.floor(Math.random() * 10000)).padStart(4, "0");
+	}
+
+	function randDate() {
+		const start = new Date(2005, 3, 23).getTime();
+		const end   = new Date(2026, 4, 16).getTime();
+		const d     = new Date(start + Math.random() * (end - start));
+		const y     = d.getFullYear();
+		const m     = String(d.getMonth() + 1).padStart(2, "0");
+		const day   = String(d.getDate()).padStart(2, "0");
+		return `${y}${m}${day}`;
+	}
+
+	function generate() {
+		const pool = FORMATS.filter(f => active.has(f.key));
+		if (!pool.length) {
+			document.getElementById("term").textContent = "no formats";
+			return;
+		}
+		const fmt  = pool[Math.floor(Math.random() * pool.length)];
+		const val  = fmt.type === "date" ? randDate() : rand4();
+		const term = fmt.prefix + val;
+		lastTerm   = term;
+		const el   = document.getElementById("term");
+		el.textContent = term;
+		el.classList.remove("empty");
+		document.getElementById("term-tmpl").textContent =
+			fmt.prefix + (fmt.type === "date" ? "YYYYMMDD" : "XXXX");
+	}
+
+	function feelingLucky() {
+		generate();
+		if (lastTerm) {
+			window.open("https://www.youtube.com/results?search_query=" + encodeURIComponent(lastTerm), "_blank");
+		}
+	}
+
+	function copyTerm() {
+		if (!lastTerm) return;
+		navigator.clipboard.writeText(lastTerm).then(() => {
+			const btn = document.getElementById("copy-btn");
+			btn.textContent = "copied";
+			btn.classList.add("copied");
+			setTimeout(() => {
+				btn.textContent = "copy";
+				btn.classList.remove("copied");
+			}, 1400);
+		});
+	}
+
+	function setAll(state) {
+		FORMATS.forEach(f => {
+			if (state) active.add(f.key);
+			else active.delete(f.key);
+		});
+		document.querySelectorAll(".chip").forEach(c => {
+			c.classList.toggle("active", state);
+		});
+	}
+
+	function buildGrids() {
+		const numGrid  = document.getElementById("grid-num");
+		const dateGrid = document.getElementById("grid-date");
+		FORMATS.forEach(f => {
+			const chip = document.createElement("div");
+			chip.className = "chip active";
+			chip.textContent = f.prefix + (f.type === "date" ? "…date" : "…####");
+			chip.dataset.key = f.key;
+			chip.onclick = () => {
+				if (active.has(f.key)) {
+					active.delete(f.key);
+					chip.classList.remove("active");
+				} else {
+					active.add(f.key);
+					chip.classList.add("active");
+				}
+			};
+			(f.type === "date" ? dateGrid : numGrid).appendChild(chip);
+		});
+	}
+
+	buildGrids();
+
+	document.addEventListener("keydown", e => {
+		if (e.code === "Space" || e.code === "Enter") {
+			e.preventDefault();
+			generate();
+		}
+		if ((e.ctrlKey || e.metaKey) && e.code === "KeyC" && lastTerm) copyTerm();
+	});
+</script>
+</body>
+</html>
