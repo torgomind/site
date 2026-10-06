@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Chat</title>
+	<style>
+		body { font-family: sans-serif; max-width: 640px; margin: 2rem auto; padding: 0 1rem; }
+		#log { border: 1px solid #888; height: 400px; overflow-y: auto; padding: 0.5rem; }
+		.msg { margin: 0.25rem 0; word-wrap: break-word; }
+		.name { font-weight: bold; }
+		#form { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
+		#input { flex: 1; }
+		#status { color: #888; font-size: 0.9rem; margin-top: 0.5rem; }
+	</style>
+</head>
+<body>
+	<div id="log"></div>
+	<div id="form">
+		<input id="input" maxlength="500" autocomplete="off" placeholder="Say something">
+		<button id="send">Send</button>
+	</div>
+	<div id="status"></div>
+	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+	<script src="chat.js"></script>
+</body>
+</html>
