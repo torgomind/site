@@ -9,19 +9,7 @@ const input = document.getElementById("input");
 const sendButton = document.getElementById("send");
 const statusLine = document.getElementById("status");
 
-const adjectives = ["Quiet", "Damp", "Lost", "Sleepy", "Hollow", "Velvet", "Crooked", "Pale", "Lucky", "Tiny"];
-const nouns = ["Moth", "Lantern", "Snail", "Raven", "Teapot", "Ghost", "Pebble", "Candle", "Fox", "Turnip"];
-
-function getName() {
-	let name = localStorage.getItem("chat_name");
-	if (!name) {
-		const a = adjectives[Math.floor(Math.random() * adjectives.length)];
-		const n = nouns[Math.floor(Math.random() * nouns.length)];
-		name = a + n + Math.floor(Math.random() * 100);
-		localStorage.setItem("chat_name", name);
-	}
-	return name;
-}
+let myName = "";
 
 function addMessage(row) {
 	const div = document.createElement("div");
@@ -59,7 +47,7 @@ async function send() {
 		return;
 	}
 	sendButton.disabled = true;
-	const { error } = await client.from(TABLE).insert({ name: myName, body: body });
+	const { error } = await client.from(TABLE).insert({ body: body });
 	sendButton.disabled = false;
 	if (error) {
 		statusLine.textContent = "Send failed: " + error.message;
@@ -68,8 +56,6 @@ async function send() {
 	input.value = "";
 	statusLine.textContent = "You are " + myName;
 }
-
-const myName = getName();
 
 async function start() {
 	const { data: sessionData } = await client.auth.getSession();
@@ -80,6 +66,12 @@ async function start() {
 			return;
 		}
 	}
+	const { data: nameData, error: nameError } = await client.rpc("chat_my_name");
+	if (nameError) {
+		statusLine.textContent = "Name failed: " + nameError.message;
+		return;
+	}
+	myName = nameData;
 	statusLine.textContent = "You are " + myName;
 	await loadRecent();
 	client
