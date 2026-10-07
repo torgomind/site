@@ -1,6 +1,6 @@
 @font-face {
     font-family: 'BirchLeaf';
-    src: url('assets/newspaper.ttf') format('truetype');
+    src: url('../fonts/newspaper.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
@@ -30,7 +30,7 @@
 body {
     font-family: 'BirchLeaf', sans-serif;
     background-color: var(--color-bg-body);
-    background-image: url('images/meat/background.png');
+    background-image: url('../images/background.png');
     background-repeat: repeat;
     background-attachment: fixed;
     background-size: cover;
@@ -123,7 +123,7 @@ a {
     transform: translateY(-50%);
     width: 32px;
     height: 21px;
-    background-image: url('images/ads/new.gif');
+    background-image: url('../images/ads/new.gif');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -142,7 +142,7 @@ a {
     transform: translateY(-50%);
     width: 24px;
     height: 24px;
-    background-image: url('images/ads/mail5.gif');
+    background-image: url('../images/ads/mail5.gif');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
