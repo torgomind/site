@@ -1,4 +1,14 @@
 const POSTS = [
+
+
+	{
+		date: "2026-10-08",
+		title: "Updating website",
+		body: `Website is currently under construction but it is being improved and repaired. The site was offline for a period of time because I forgot to pay for the domain. Not sure if I will actually end up posting news/updates here but perhaps.`
+		
+	},
+
+
 	{
 		date: "2026-10-07",
 		title: "Lorem ipsum dolor",
@@ -10,11 +20,16 @@ const POSTS = [
 			{ type: "youtube", id: "Hp81aR5uOvA" }
 		]
 	},
+
+
+
 	{
 		date: "2026-09-29",
 		title: "Lorem ipsum dolor sit amet",
 		body: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.`
 	},
+
+
 	{
 		date: "2026-09-18",
 		title: "Consectetur adipiscing elit, sed do eiusmod tempor incididunt",
