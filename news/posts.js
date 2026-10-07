@@ -4,7 +4,9 @@ const POSTS = [
 	{
 		date: "2026-10-08",
 		title: "Updating website",
-		body: `Website is currently under construction but it is being improved and repaired. The site was offline for a period of time because I forgot to pay for the domain. Not sure if I will actually end up posting news/updates here but perhaps.`
+		body: `<p>Currently updating website. Things will be wonky for a time.</p>
+<p>Girl In Darkness: the work continues, the project is in good shape.
+`
 		
 	},
 
