@@ -1,0 +1,258 @@
+:root {
+	--font-mono: "Courier New", Courier, monospace;
+	--color-field-bg: #0a0202;
+	--color-checker-a: #1e0707;
+	--color-checker-b: #120404;
+}
+
+.tool-page {
+	color: var(--color-text-muted);
+	font-size: 0.95rem;
+}
+
+.tool-shell {
+	max-width: 1100px;
+	margin: 0 auto;
+	padding: 16px 16px 4rem;
+}
+
+.tool-topbar {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 1rem;
+	margin-bottom: 1.5rem;
+	text-align: left;
+}
+
+.tool-topbar a {
+	display: inline-block;
+	font-family: var(--font-display);
+	padding: 0.2rem 0.8rem;
+	font-size: 1.1rem;
+	letter-spacing: 0.1em;
+	text-decoration: none;
+	text-transform: uppercase;
+	color: var(--color-primary);
+	background-color: var(--color-bg-button);
+	border: 3px solid;
+	border-color: var(--color-bevel-light) var(--color-bevel-dark) var(--color-bevel-dark) var(--color-bevel-light);
+}
+
+.tool-topbar a:hover,
+.tool-topbar a:focus-visible {
+	color: var(--color-text-light);
+	background-color: var(--color-bg-button-hover);
+	border-color: var(--color-bevel-dark) var(--color-bevel-light) var(--color-bevel-light) var(--color-bevel-dark);
+	outline: none;
+}
+
+.tool-title {
+	font-size: 2.6rem;
+	font-weight: normal;
+	line-height: 1.1;
+	letter-spacing: 0.12em;
+	color: var(--color-primary);
+	text-align: center;
+}
+
+.tool-sub {
+	margin: 0.3rem 0 1.5rem;
+	font-size: 0.95rem;
+	letter-spacing: 0.08em;
+	color: var(--color-text-body);
+	text-align: center;
+}
+
+.tool-panel {
+	background-color: var(--color-bg-card);
+	border: 1px solid var(--color-border-card);
+	border-radius: 5px;
+	padding: 1rem 1.2rem;
+}
+
+.tool-label {
+	font-size: 0.8rem;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: var(--color-text-body);
+}
+
+.tool-status {
+	font-size: 0.9rem;
+	color: var(--color-primary);
+	min-height: 1.2em;
+}
+
+.tool-mono {
+	font-family: var(--font-mono);
+}
+
+.tool-page button {
+	font-family: inherit;
+	font-size: 0.9rem;
+	letter-spacing: 0.08em;
+	padding: 0.35rem 1rem;
+	color: var(--color-primary);
+	background-color: var(--color-bg-button);
+	border: 3px solid;
+	border-color: var(--color-bevel-light) var(--color-bevel-dark) var(--color-bevel-dark) var(--color-bevel-light);
+	border-radius: 0;
+	cursor: pointer;
+}
+
+.tool-page button:hover:not(:disabled),
+.tool-page button:focus-visible {
+	color: var(--color-text-light);
+	background-color: var(--color-bg-button-hover);
+	outline: none;
+}
+
+.tool-page button:active:not(:disabled),
+.tool-page button.active {
+	color: var(--color-text-light);
+	background-color: var(--color-bg-button-hover);
+	border-color: var(--color-bevel-dark) var(--color-bevel-light) var(--color-bevel-light) var(--color-bevel-dark);
+}
+
+.tool-page button.primary {
+	color: var(--color-text-light);
+	background-color: var(--color-primary-dark);
+}
+
+.tool-page button.primary:hover:not(:disabled) {
+	background-color: #9a4545;
+}
+
+.tool-page button:disabled {
+	opacity: 0.4;
+	cursor: default;
+}
+
+.tool-page input[type="text"],
+.tool-page input[type="number"],
+.tool-page select,
+.tool-page textarea {
+	font-family: inherit;
+	font-size: 0.9rem;
+	color: var(--color-text-light);
+	background-color: var(--color-field-bg);
+	border: 1px solid var(--color-border-card);
+	border-radius: 0;
+	padding: 0.35rem 0.5rem;
+}
+
+.tool-page textarea {
+	font-family: var(--font-mono);
+	font-size: 0.9rem;
+}
+
+.tool-page input:focus-visible,
+.tool-page select:focus-visible,
+.tool-page textarea:focus-visible {
+	outline: 2px solid var(--color-primary);
+	outline-offset: 1px;
+}
+
+.tool-page input[type="range"],
+.tool-page input[type="checkbox"] {
+	accent-color: var(--color-primary-dark);
+}
+
+.tool-page input[type="file"] {
+	font-family: inherit;
+	color: var(--color-text-body);
+	max-width: 100%;
+}
+
+.tool-page a {
+	color: var(--color-primary);
+}
+
+.tool-drop {
+	border: 2px dashed var(--color-border-card);
+	background-color: var(--color-bg-card);
+	color: var(--color-text-body);
+	text-align: center;
+	cursor: pointer;
+	transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.tool-drop:hover,
+.tool-drop.over,
+.tool-drop.hot,
+.tool-drop.hover {
+	border-color: var(--color-primary);
+	color: var(--color-text-light);
+}
+
+.tool-checker {
+	background-color: var(--color-checker-b);
+	background-image:
+		linear-gradient(45deg, var(--color-checker-a) 25%, transparent 25%),
+		linear-gradient(-45deg, var(--color-checker-a) 25%, transparent 25%),
+		linear-gradient(45deg, transparent 75%, var(--color-checker-a) 75%),
+		linear-gradient(-45deg, transparent 75%, var(--color-checker-a) 75%);
+	background-size: 16px 16px;
+	background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+}
+
+.tool-directory {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 2rem 3rem;
+	margin-bottom: 3rem;
+	padding: 1.5rem 2rem;
+	background-color: var(--color-bg-card);
+	border: 3px solid;
+	border-color: var(--color-bevel-dark) var(--color-bevel-light) var(--color-bevel-light) var(--color-bevel-dark);
+}
+
+.tools-section-heading {
+	font-size: 1.4rem;
+	font-weight: normal;
+	letter-spacing: 0.15em;
+	text-transform: uppercase;
+	color: var(--color-primary);
+	border-bottom: 1px dotted var(--color-border-card);
+	padding-bottom: 0.2rem;
+	margin-bottom: 0.6rem;
+}
+
+.tool-list {
+	list-style: none;
+}
+
+.tool-list li {
+	padding: 0.2rem 0;
+}
+
+.tool-list a {
+	font-size: 1rem;
+	color: var(--color-text-muted);
+	text-decoration: none;
+}
+
+.tool-icon {
+	display: inline-block;
+	width: 1.8em;
+	text-align: center;
+	text-decoration: none;
+}
+
+.tool-list a:hover {
+	color: var(--color-text-light);
+	text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+	.tool-title {
+		font-size: 2rem;
+	}
+
+	.tool-directory {
+		grid-template-columns: 1fr;
+		gap: 1.5rem;
+		padding: 1rem 1.2rem;
+	}
+}

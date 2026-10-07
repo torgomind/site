@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Image Tiler | TORGOMIND</title>
+	<meta name="description" content="Repeat an image across a grid and export it as a PNG. A free tool from TORGOMIND.">
+	<link rel="stylesheet" href="../../assets/css/style.css">
+	<link rel="stylesheet" href="../../assets/css/tools.css">
+	<style>
+		.tiler {
+			display: flex;
+			flex-direction: column;
+			gap: 16px;
+			align-items: flex-start;
+		}
+
+		.row {
+			display: flex;
+			gap: 16px;
+			align-items: flex-end;
+			flex-wrap: wrap;
+		}
+
+		.row label {
+			display: flex;
+			flex-direction: column;
+			gap: 4px;
+		}
+
+		.row input[type="number"] {
+			width: 80px;
+		}
+
+		#info {
+			font-size: 1rem;
+			color: var(--color-text-body);
+		}
+
+		#drop {
+			padding: 24px;
+			width: 100%;
+			max-width: 360px;
+			cursor: default;
+		}
+
+		#preview {
+			image-rendering: pixelated;
+			border: 1px solid var(--color-border-card);
+			max-width: 100%;
+		}
+	</style>
+</head>
+<body class="tool-page">
+	<div class="tool-shell">
+		<nav class="tool-topbar">
+			<a href="../index.html">« tools</a>
+			<a href="../../index.html">torgomind</a>
+		</nav>
+
+		<h1 class="tool-title">image tiler</h1>
+		<p class="tool-sub">repeat an image across a grid</p>
+
+		<div class="tiler">
+			<div class="row">
+				<input type="file" id="file" accept="image/png,image/jpeg,image/webp">
+			</div>
+			<div id="drop" class="tool-drop">Drag &amp; drop an image here, or paste with Ctrl+V</div>
+			<div class="row">
+				<label class="tool-label">Columns
+					<input type="number" id="cols" value="10" min="1" max="500">
+				</label>
+				<label class="tool-label">Rows
+					<input type="number" id="rows" value="10" min="1" max="500">
+				</label>
+				<button id="export" class="primary" disabled>Export PNG</button>
+			</div>
+			<div id="info">Load an image to begin.</div>
+			<canvas id="preview" class="tool-checker"></canvas>
+		</div>
+	</div>
+
+<script>
+	const fileInput = document.getElementById("file");
+	const colsInput = document.getElementById("cols");
+	const rowsInput = document.getElementById("rows");
+	const exportBtn = document.getElementById("export");
+	const info = document.getElementById("info");
+	const canvas = document.getElementById("preview");
+	const drop = document.getElementById("drop");
+	const ctx = canvas.getContext("2d");
+	let img = null;
+
+	function render() {
+		if (!img) return;
+		const cols = Math.max(1, parseInt(colsInput.value) || 1);
+		const rows = Math.max(1, parseInt(rowsInput.value) || 1);
+		canvas.width = img.width * cols;
+		canvas.height = img.height * rows;
+		ctx.imageSmoothingEnabled = false;
+		for (let y = 0; y < rows; y++) {
+			for (let x = 0; x < cols; x++) {
+				ctx.drawImage(img, x * img.width, y * img.height);
+			}
+		}
+		info.textContent = `Source ${img.width}x${img.height} -> Output ${canvas.width}x${canvas.height} (${cols}x${rows})`;
+		exportBtn.disabled = false;
+	}
+
+	function loadFile(f) {
+		if (!f || !f.type.startsWith("image/")) return;
+		const url = URL.createObjectURL(f);
+		img = new Image();
+		img.onload = () => {
+			URL.revokeObjectURL(url);
+			render();
+		};
+		img.src = url;
+	}
+
+	fileInput.addEventListener("change", (e) => {
+		loadFile(e.target.files[0]);
+	});
+
+	drop.addEventListener("dragover", (e) => {
+		e.preventDefault();
+		drop.classList.add("over");
+	});
+
+	drop.addEventListener("dragleave", () => {
+		drop.classList.remove("over");
+	});
+
+	drop.addEventListener("drop", (e) => {
+		e.preventDefault();
+		drop.classList.remove("over");
+		loadFile(e.dataTransfer.files[0]);
+	});
+
+	window.addEventListener("dragover", (e) => e.preventDefault());
+	window.addEventListener("drop", (e) => e.preventDefault());
+
+	window.addEventListener("paste", (e) => {
+		const items = e.clipboardData.items;
+		for (const item of items) {
+			if (item.type.startsWith("image/")) {
+				loadFile(item.getAsFile());
+				break;
+			}
+		}
+	});
+
+	colsInput.addEventListener("input", render);
+	rowsInput.addEventListener("input", render);
+
+	exportBtn.addEventListener("click", () => {
+		canvas.toBlob((blob) => {
+			const a = document.createElement("a");
+			a.href = URL.createObjectURL(blob);
+			a.download = "tiled.png";
+			a.click();
+			URL.revokeObjectURL(a.href);
+		}, "image/png");
+	});
+</script>
+</body>
+</html>

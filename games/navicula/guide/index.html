@@ -1,35 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Navicula Hint System</title>
-    <link rel="stylesheet" href="style.css"> <!-- Optional CSS -->
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Navicula Meatus Hint System | TORGOMIND</title>
+	<meta name="description" content="A hint system for Navicula Meatus, the dark and surreal puzzle adventure by TORGOMIND.">
+	<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <h1>Navicula Hint System</h1>
+	<h1>Navicula Hint System</h1>
 
-    <!-- Main Menu Area -->
-    <div id="main-menu">
-        <h2>Where are you stuck?</h2>
-        <ul id="menu-options">
-            <!-- Options will be populated by JavaScript -->
-            <!-- Example: <li><button data-topic="topic_id">Topic Name</button></li> -->
-        </ul>
-    </div>
+	<div id="main-menu">
+		<h2>Where are you stuck?</h2>
+		<ul id="menu-options">
+		</ul>
+	</div>
 
-    <!-- Hint Display Area (Initially Hidden) -->
-    <div id="hint-area" class="hidden">
-        <h2 id="hint-topic-title"></h2>
-        <div id="hint-steps">
-            <!-- Hints will appear here one by one -->
-        </div>
-        <button id="next-hint-button">Show Hint</button>
-        <button id="back-button">Back to Menu</button>
-    </div>
+	<div id="hint-area" class="hidden">
+		<h2 id="hint-topic-title"></h2>
+		<div id="hint-steps">
+		</div>
+		<button id="next-hint-button">Show Hint</button>
+		<button id="back-button">Back to Menu</button>
+	</div>
 
-    <script src="hints.js"></script> <!-- Hint data -->
-    <script src="script.js"></script> <!-- Main logic -->
+	<script src="hints.js"></script>
+	<script src="script.js"></script>
 </body>
 </html>

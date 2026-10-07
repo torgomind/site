@@ -1,8 +1,6 @@
-// hints.js - Store all hint data here
 
 const HINT_DATA = {
 
-    // --- TOP LEVEL: Controls ---
     "controls": {
         title: "Technical Issues & Controls",
         type: "hints",
@@ -14,7 +12,6 @@ const HINT_DATA = {
         ]
     },
 
-    // --- TOP LEVEL: Starting Town (Submenu) ---
     "starting_town": {
         title: "The Starting Town Area",
         type: "submenu",
@@ -23,7 +20,6 @@ const HINT_DATA = {
             { id: "start_npc_item", title: "Cannot find a particular item" }
         ]
     },
-    // --- Starting Town Sub-Topics (Hints) ---
     "start_general_tips": {
         title: "Lost and need general tips",
         type: "hints",
@@ -51,7 +47,6 @@ const HINT_DATA = {
         ]
     },
 
-    // --- TOP LEVEL: Later Areas (Submenu) ---
     "later_areas": {
         title: "A Later Area",
         type: "submenu",
@@ -64,7 +59,6 @@ const HINT_DATA = {
             { id: "later_underground", title: "The underground" }
         ]
     },
-    // --- Later Areas Sub-Topics (Hints) ---
     "later_maze_end": {
         title: "I've completed the maze. What now?",
         type: "hints",
@@ -131,7 +125,6 @@ const HINT_DATA = {
         ]
     },
 
-    // --- TOP LEVEL: Steam Achievements ---
     "achievements": {
         title: "Steam Achievements",
         type: "hints",
@@ -145,10 +138,8 @@ const HINT_DATA = {
             "Rattled: the hint room is beside the park; entry is granted to those who are patient."
         ]
     }
-    // --- Add more topics/subtopics as needed ---
 };
 
-// MENU_ORDER defines the top-level menu item IDs and their order
 const MENU_ORDER = [
     "controls",
     "starting_town",

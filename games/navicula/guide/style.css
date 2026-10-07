@@ -1,11 +1,10 @@
-/* style.css - */
 @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
 
 
 
 
 @font-face {
-    font-family: 'Pixel English'; /* Choose a distinct name */
+    font-family: 'Pixel English';
     src: url('PixEng.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
@@ -17,29 +16,22 @@
 
 
 body {
-    /* --- Core Appearance --- */
     cursor: url('cursor.png'), auto;
-    background-color: #0F0F00; /* Very dark grey background #1a1a1a */
-    color: #c0c0c0; /* Light grey/off-white text */
-    /*font-family: 'Courier New', Courier, monospace; /* Common pixel-friendly monospace font */
-    /*font-family: 'Old English', serif;*/  /* <<< Use this for OldEng.ttf */
-    font-family: 'Pixel English', monospace; /* <<< Use this for PixEng.ttf */
-    /*font-family: 'Birchleaf', serif; */    /* <<< Use this for Birchleaf font */
-    /*font-family: 'Courier New', Courier, monospace; */ /* <<< Default pixel-like */
-    /*font-family: 'Birchleaf', serif;*/
+    background-color: #0F0F00;
+    color: #c0c0c0;
+    font-family: 'Pixel English', monospace;
     font-size: 30px;
-    line-height: 1.7; /* Slightly more spacing for readability */
+    line-height: 1.7;
     padding: 25px;
     margin: 0;
 }
 
-/* --- Headings --- */
 h1, h2 {
-    color: #b45b5b; /* Reddish color from your image */
+    color: #b45b5b;
     text-align: center;
     margin-bottom: 2em;
-    font-weight: normal; /* Often looks better with pixel/gothic fonts */
-    letter-spacing: 1px; /* Slight spacing */
+    font-weight: normal;
+    letter-spacing: 1px;
 }
 
 h1 {
@@ -52,54 +44,49 @@ h2 {
     margin-bottom: 1.5em;
 }
 
-/* --- Layout Containers --- */
 #main-menu, #hint-area {
-    max-width: 600px; /* Constrain width for readability */
-    margin: 0 auto; /* Center the content */
+    max-width: 600px;
+    margin: 0 auto;
     padding: 15px;
-    border: 1px dashed #444; /* Subtle dashed border */
-    background-color: rgba(0, 0, 0, 0.1); /* Slightly darker box */
+    border: 1px dashed #444;
+    background-color: rgba(0, 0, 0, 0.1);
 }
 
 #hint-area {
-    border-style: solid; /* Solid border for hint area */
+    border-style: solid;
 }
 
 
-/* --- Hide/Show Utility --- */
 .hidden {
     display: none;
 }
 
-/* --- Main Menu Styling --- */
 #main-menu ul {
     list-style: none;
     padding: 0;
     margin: 0;
-    text-align: center; /* Center the menu items */
+    text-align: center;
 }
 
 #main-menu li {
-    margin-bottom: 5px; /* Space between menu items */
+    margin-bottom: 5px;
 }
 
 #main-menu button {
     background: none;
     border: none;
-    color: #9a9a9a; /* Dimmer color for options */
+    color: #9a9a9a;
     padding: 8px 10px;
     margin: 0;
-    /*cursor: pointer;*/
     cursor: url('cursor.png'), auto;
-    font-family: inherit; /* Use body font */
+    font-family: inherit;
     font-size: 1.1em;
     text-align: center;
-    display: inline-block; /* Allow centering */
+    display: inline-block;
     transition: color 0.2s ease, background-color 0.2s ease;
-    text-decoration: none; /* Remove default button underline */
+    text-decoration: none;
 }
 
-/* Add subtle markers */
 #main-menu button::before {
     content: "> ";
     color: #555;
@@ -113,121 +100,105 @@ h2 {
 
 
 #main-menu button:hover {
-    color: #ffffff; /* Brighten on hover */
-    background-color: rgba(180, 91, 91, 0.1); /* Faint reddish background */
+    color: #ffffff;
+    background-color: rgba(180, 91, 91, 0.1);
 }
 
-/* --- Hint Area Styling --- */
 #hint-steps {
     margin-bottom: 20px;
 }
 
 #hint-steps p {
-    /*font-family: 'Courier New', Courier, monospace; /* <<< Specific font for hints ttt */
     font-family: 'VT323', Consolas, monospace;
 
-    background-color: transparent; /* No background for hints */
+    background-color: transparent;
     padding: 4px 0;
     margin-bottom: 10px;
-    border: none; /* Remove the side border */
-    color: #888888; /* Dimmer color for revealed hints */
+    border: none;
+    color: #888888;
     transition: color 0.3s ease;
-    /* Add a subtle indicator */
     padding-left: 15px;
     position: relative;
 }
 
-/* Add a marker for each hint */
 #hint-steps p::before {
     content: "-";
     position: absolute;
     left: 0;
     top: 4px;
-    color: #555; /* Dark marker */
+    color: #555;
 }
 
 
 #hint-steps p:last-child {
-    color: #d4d4d4; /* Make the latest hint stand out */
-    /*font-weight: bold;*/ /* Make it slightly bolder */
+    color: #d4d4d4;
 }
 
-/* Style the last hint's marker differently */
 #hint-steps p:last-child::before {
-    content: ">"; /* Use a different marker */
-    color: #b45b5b; /* Use the reddish color */
+    content: ">";
+    color: #b45b5b;
 }
 
-/* --- Action Buttons (Next Hint / Back) --- */
 #next-hint-button, #back-button {
     background: none;
-    border: 1px solid #555; /* Simple border */
-    color: #b45b5b; /* Reddish color */
+    border: 1px solid #555;
+    color: #b45b5b;
     padding: 8px 15px;
-    margin: 10px 5px 0 0; /* Spacing */
+    margin: 10px 5px 0 0;
     cursor: url('cursor.png'), auto;
-    /*cursor: pointer;*/
     font-family: inherit;
     font-size: 0.9em;
-    /*text-transform: uppercase;*/ /* Give it a console feel */
     letter-spacing: 1px;
     transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 #next-hint-button:hover, #back-button:hover {
-    background-color: #333; /* Dark background on hover */
-    color: #ffffff; /* White text on hover */
+    background-color: #333;
+    color: #ffffff;
     border-color: #777;
 }
 
 #next-hint-button:disabled {
-    color: #666; /* Grey out disabled button */
+    color: #666;
     border-color: #444;
     cursor: url('cursor.png'), auto;
-    /*cursor: default;*/
     background-color: transparent;
 }
 
-#next-hint-button.hidden { /* Ensure hidden class works */
+#next-hint-button.hidden {
     display: none;
 }
 
-/* style.css */
-
-/* ... (Keep all your existing CSS) ... */
 
 
-/* --- Styling for Submenu items within the Hint Area --- */
+
 
 .submenu-list {
     list-style: none;
     padding: 0;
     margin: 0;
-    text-align: center; /* Center the submenu items */
+    text-align: center;
 }
 
 .submenu-list li {
-    margin-bottom: 8px; /* Space between submenu items */
+    margin-bottom: 8px;
 }
 
-/* Style submenu buttons similar to main menu buttons */
 .submenu-button {
     background: none;
     border: none;
-    color: #9a9a9a; /* Dimmer color for options */
+    color: #9a9a9a;
     padding: 8px 10px;
     margin: 0;
     cursor: url('cursor.png'), auto;
-    /*cursor: pointer;*/
-    font-family: inherit; /* Use body font (e.g., Birchleaf) */
-    font-size: 1.1em; /* Make similar size to main menu */
+    font-family: inherit;
+    font-size: 1.1em;
     text-align: center;
     display: inline-block;
     transition: color 0.2s ease, background-color 0.2s ease;
     text-decoration: none;
 }
 
-/* Optional: Add markers like the main menu */
 .submenu-button::before {
     content: "[ ";
     color: #555;
@@ -240,17 +211,14 @@ h2 {
 }
 
 .submenu-button:hover {
-    color: #ffffff; /* Brighten on hover */
-    background-color: rgba(180, 91, 91, 0.1); /* Faint reddish background */
+    color: #ffffff;
+    background-color: rgba(180, 91, 91, 0.1);
 }
 
-/* --- Ensure Hint Steps paragraphs are styled separately --- */
 #hint-steps p {
-    /* Make sure specific paragraph styles don't conflict */
     font-family: 'VT323', Consolas, monospace;
-    /* ... other hint paragraph styles ... */
     padding: 4px 0;
     margin-bottom: 12px;
     padding-left: 20px;
-    text-align: left; /* Hints should likely be left-aligned */
+    text-align: left;
 }

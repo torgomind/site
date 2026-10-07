@@ -1,285 +1,188 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>dead video search</title>
-<style>
-	*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Dead Video Search | TORGOMIND</title>
+	<meta name="description" content="Generate search terms that find unwatched, zero-view YouTube videos. A free tool from TORGOMIND.">
+	<link rel="stylesheet" href="../../assets/css/style.css">
+	<link rel="stylesheet" href="../../assets/css/tools.css">
+	<style>
+		.deadvid {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 1.5rem;
+		}
 
-	:root {
-		--bg:       #0d0d0f;
-		--surface:  #141417;
-		--raised:   #1a1a1e;
-		--border:   #2a2a30;
-		--border2:  #3a3a42;
-		--text:     #c8c8d0;
-		--muted:    #5a5a66;
-		--dim:      #3a3a44;
-		--accent:   #7c6fa0;
-		--accent2:  #a090c8;
-		--red:      #8b3a3a;
-		--red2:     #c05050;
-		--mono:     'Courier New', Courier, monospace;
-		--sans:     system-ui, -apple-system, sans-serif;
-	}
+		.deadvid .tool-panel {
+			width: 100%;
+			max-width: 640px;
+		}
 
-	html, body {
-		min-height: 100vh;
-		background: var(--bg);
-		color: var(--text);
-		font-family: var(--sans);
-		font-size: 15px;
-		line-height: 1.5;
-	}
+		.output-card {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 1.2rem;
+			padding: 2rem 1.5rem;
+		}
 
-	body {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		padding: 2.5rem 1rem 3rem;
-		gap: 2rem;
-	}
+		.term-display {
+			font-family: var(--font-mono);
+			font-size: clamp(1.8rem, 8vw, 3rem);
+			color: var(--color-text-light);
+			letter-spacing: 0.08em;
+			text-align: center;
+			min-height: 1.2em;
+			word-break: break-all;
+			line-height: 1.2;
+		}
 
-	header {
-		text-align: center;
-	}
+		.term-display.empty {
+			color: var(--color-text-body);
+		}
 
-	header h1 {
-		font-family: var(--mono);
-		font-size: clamp(1.4rem, 5vw, 2.2rem);
-		font-weight: normal;
-		color: var(--accent2);
-		letter-spacing: 0.15em;
-		text-transform: lowercase;
-	}
+		.term-template {
+			font-family: var(--font-mono);
+			font-size: 0.8rem;
+			color: var(--color-text-body);
+			letter-spacing: 0.1em;
+		}
 
-	header p {
-		font-size: 0.8rem;
-		color: var(--muted);
-		margin-top: 0.4rem;
-		letter-spacing: 0.08em;
-		text-transform: lowercase;
-	}
+		.divider {
+			width: 100%;
+			height: 1px;
+			background-color: var(--color-border-card);
+		}
 
-	.card {
-		width: 100%;
-		max-width: 640px;
-		background: var(--surface);
-		border: 1px solid var(--border);
-		border-radius: 8px;
-	}
+		.btn-row {
+			display: flex;
+			gap: 0.75rem;
+			flex-wrap: wrap;
+			justify-content: center;
+			width: 100%;
+		}
 
-	.output-card {
-		padding: 2rem 1.5rem;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 1.2rem;
-		border-color: var(--border2);
-	}
+		.btn-row button {
+			text-transform: lowercase;
+			white-space: nowrap;
+		}
 
-	.term-display {
-		font-family: var(--mono);
-		font-size: clamp(1.8rem, 8vw, 3rem);
-		font-weight: normal;
-		color: #e0ddf0;
-		letter-spacing: 0.08em;
-		text-align: center;
-		min-height: 1.2em;
-		word-break: break-all;
-		line-height: 1.2;
-	}
+		.filters-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 1rem;
+		}
 
-	.term-display.empty {
-		color: var(--dim);
-	}
+		.filter-actions {
+			display: flex;
+			gap: 0.5rem;
+		}
 
-	.term-template {
-		font-family: var(--mono);
-		font-size: 0.72rem;
-		color: var(--muted);
-		letter-spacing: 0.1em;
-	}
+		.tool-page .text-btn {
+			font-size: 0.9rem;
+			padding: 0.1rem 0.5rem;
+			border-width: 2px;
+		}
 
-	.divider {
-		width: 100%;
-		height: 1px;
-		background: var(--border);
-	}
+		.section-label {
+			margin-bottom: 0.5rem;
+		}
 
-	.btn-row {
-		display: flex;
-		gap: 0.75rem;
-		flex-wrap: wrap;
-		justify-content: center;
-		width: 100%;
-	}
+		.chip-grid {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 6px;
+			margin-bottom: 1rem;
+		}
 
-	button {
-		font-family: var(--mono);
-		font-size: 0.85rem;
-		letter-spacing: 0.1em;
-		text-transform: lowercase;
-		padding: 0.65rem 1.6rem;
-		border-radius: 4px;
-		border: 1px solid var(--border2);
-		background: transparent;
-		color: var(--text);
-		cursor: pointer;
-		transition: border-color 0.15s, color 0.15s, background 0.15s;
-		white-space: nowrap;
-	}
+		.chip {
+			font-family: var(--font-mono);
+			font-size: 0.8rem;
+			letter-spacing: 0.06em;
+			padding: 5px 10px;
+			border: 1px solid var(--color-border-card);
+			background-color: var(--color-field-bg);
+			color: var(--color-text-body);
+			cursor: pointer;
+			user-select: none;
+		}
 
-	button:hover { border-color: var(--accent); color: var(--accent2); }
-	button:active { background: #1e1a2a; transform: scale(0.97); }
+		.chip.active {
+			border-color: var(--color-primary);
+			color: var(--color-text-light);
+			background-color: var(--color-primary-dark);
+		}
 
-	#gen-btn {
-		border-color: var(--accent);
-		color: var(--accent2);
-		padding: 0.65rem 2.4rem;
-		font-size: 0.95rem;
-	}
+		.chip:hover {
+			border-color: var(--color-primary);
+		}
 
-	#gen-btn:hover { background: #1e1a2a; }
+		.deadvid-footer {
+			font-size: 0.9rem;
+			color: var(--color-text-body);
+			letter-spacing: 0.06em;
+			text-align: center;
+		}
 
-	#copy-btn.copied { border-color: var(--red); color: var(--red2); }
+		@media (max-width: 420px) {
+			.output-card {
+				padding: 1.5rem 1rem;
+			}
 
-	#lucky-btn {
-		border-color: var(--red);
-		color: var(--red2);
-	}
+			#gen-btn {
+				width: 100%;
+			}
 
-	#lucky-btn:hover { background: #1e1010; border-color: var(--red2); }
-
-	.filters-card {
-		padding: 1.2rem 1.5rem;
-	}
-
-	.filters-header {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		margin-bottom: 1rem;
-	}
-
-	.filters-header span {
-		font-size: 0.72rem;
-		color: var(--muted);
-		letter-spacing: 0.12em;
-		text-transform: lowercase;
-	}
-
-	.filter-actions {
-		display: flex;
-		gap: 0.5rem;
-	}
-
-	.text-btn {
-		font-family: var(--mono);
-		font-size: 0.68rem;
-		color: var(--muted);
-		background: none;
-		border: none;
-		padding: 0.2rem 0.5rem;
-		cursor: pointer;
-		letter-spacing: 0.08em;
-		border-radius: 3px;
-		transition: color 0.12s;
-	}
-
-	.text-btn:hover { color: var(--accent2); background: transparent; border: none; }
-
-	.section-label {
-		font-size: 0.65rem;
-		letter-spacing: 0.15em;
-		color: var(--dim);
-		text-transform: lowercase;
-		margin-bottom: 0.5rem;
-		padding-left: 2px;
-	}
-
-	.chip-grid {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 6px;
-		margin-bottom: 1rem;
-	}
-
-	.chip {
-		font-family: var(--mono);
-		font-size: 0.72rem;
-		letter-spacing: 0.06em;
-		padding: 5px 10px;
-		border-radius: 3px;
-		border: 1px solid var(--border);
-		background: var(--raised);
-		color: var(--dim);
-		cursor: pointer;
-		transition: border-color 0.12s, color 0.12s, background 0.12s;
-		user-select: none;
-	}
-
-	.chip.active {
-		border-color: var(--accent);
-		color: var(--accent2);
-		background: #1a182a;
-	}
-
-	.chip:hover { border-color: var(--border2); }
-	.chip.active:hover { border-color: var(--accent2); }
-
-	footer {
-		font-size: 0.7rem;
-		color: var(--dim);
-		letter-spacing: 0.06em;
-		text-align: center;
-	}
-
-	@media (max-width: 420px) {
-		body { padding: 1.5rem 0.75rem 2rem; gap: 1.25rem; }
-		.output-card { padding: 1.5rem 1rem; }
-		.filters-card { padding: 1rem; }
-		#gen-btn { width: 100%; }
-		button { flex: 1 1 auto; }
-	}
-</style>
+			.btn-row button {
+				flex: 1 1 auto;
+			}
+		}
+	</style>
 </head>
-<body>
+<body class="tool-page">
+	<div class="tool-shell">
+		<nav class="tool-topbar">
+			<a href="../index.html">« tools</a>
+			<a href="../../index.html">torgomind</a>
+		</nav>
 
-<header>
-	<h1>dead video search</h1>
-	<p>zero-view youtube term generator</p>
-</header>
+		<h1 class="tool-title">dead video search</h1>
+		<p class="tool-sub">zero-view youtube term generator</p>
 
-<div class="card output-card">
-	<div class="term-display empty" id="term">_ _ _ _ _ _</div>
-	<div class="term-template" id="term-tmpl"></div>
-	<div class="divider"></div>
-	<div class="btn-row">
-		<button id="gen-btn" onclick="generate()">generate</button>
-		<button id="copy-btn" onclick="copyTerm()">copy</button>
-		<button id="lucky-btn" onclick="feelingLucky()">i'm feeling lucky</button>
-	</div>
-</div>
+		<div class="deadvid">
+			<div class="tool-panel output-card">
+				<div class="term-display empty" id="term">_ _ _ _ _ _</div>
+				<div class="term-template" id="term-tmpl"></div>
+				<div class="divider"></div>
+				<div class="btn-row">
+					<button id="gen-btn" class="primary" onclick="generate()">generate</button>
+					<button id="copy-btn" onclick="copyTerm()">copy</button>
+					<button id="lucky-btn" onclick="feelingLucky()">i’m feeling lucky</button>
+				</div>
+			</div>
 
-<div class="card filters-card">
-	<div class="filters-header">
-		<span>formats</span>
-		<div class="filter-actions">
-			<button class="text-btn" onclick="setAll(true)">all</button>
-			<button class="text-btn" onclick="setAll(false)">none</button>
+			<div class="tool-panel">
+				<div class="filters-header">
+					<span class="tool-label">formats</span>
+					<div class="filter-actions">
+						<button class="text-btn" onclick="setAll(true)">all</button>
+						<button class="text-btn" onclick="setAll(false)">none</button>
+					</div>
+				</div>
+
+				<div class="tool-label section-label">numeric: prefix + 0000-9999</div>
+				<div class="chip-grid" id="grid-num"></div>
+
+				<div class="tool-label section-label">date: prefix + YYYYMMDD</div>
+				<div class="chip-grid" id="grid-date"></div>
+			</div>
+
+			<div class="deadvid-footer">torgomind technology 2026</div>
 		</div>
 	</div>
-
-	<div class="section-label">numeric — prefix + 0000–9999</div>
-	<div class="chip-grid" id="grid-num"></div>
-
-	<div class="section-label">date — prefix + YYYYMMDD</div>
-	<div class="chip-grid" id="grid-date"></div>
-</div>
-
-<footer>torgomind technology 2026</footer>
 
 <script>
 	const FORMATS = [
@@ -351,10 +254,10 @@
 		navigator.clipboard.writeText(lastTerm).then(() => {
 			const btn = document.getElementById("copy-btn");
 			btn.textContent = "copied";
-			btn.classList.add("copied");
+			btn.classList.add("active");
 			setTimeout(() => {
 				btn.textContent = "copy";
-				btn.classList.remove("copied");
+				btn.classList.remove("active");
 			}, 1400);
 		});
 	}

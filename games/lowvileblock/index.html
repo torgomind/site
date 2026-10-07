@@ -2,23 +2,22 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>꒒ꊿꅐ꒦꒐꒒ꑀꃳ꒒ꊿꏳꈵ</title>
+	<title>Low Vile Block | TORGOMIND</title>
+	<meta name="description" content="Low Vile Block, an experimental online game by TORGOMIND where you violently break everything.">
 	<style>
-		/* --- Custom Font Definition --- */
 		@font-face {
 			font-family: 'Trajan';
 			src: url('../../assets/fonts/TrajanPro-Regular.ttf') format('truetype');
 		}
 		@font-face {
 			font-family: 'BirchLeafFont';
-            src: url('../../assets/fonts/BirchLeaf.ttf') format('truetype');
+			src: url('../../assets/fonts/BirchLeaf.ttf') format('truetype');
 		}
 		@font-face {
 			font-family: 'Digital7';
-            src: url('../../assets/fonts/digital7.ttf') format('truetype');
+			src: url('../../assets/fonts/digital7.ttf') format('truetype');
 		}
 
-		/* --- Global Styles & Background --- */
 		html {
 			height: 100%;
 		}
@@ -39,7 +38,6 @@
 			box-sizing: border-box;
 		}
 
-		/* --- Logo Styling --- */
 		.logo {
 			max-width: 700px;
 			width: 90%;
@@ -47,9 +45,8 @@
 			margin-bottom: 20px;
 		}
 
-		/* --- Panel Style --- */
 		.leaderboard {
-			max-width: 1200px; /* Increased width for three columns */
+			max-width: 1200px;
 			width: 100%;
 			background-color: rgba(102, 0, 66, 0.1);
 			border: 2px solid #000000;
@@ -57,19 +54,17 @@
 			padding: 25px;
 		}
 
-		/* --- THREE-Column Layout --- */
 		.leaderboard-content {
 			display: flex;
-			gap: 30px; /* Space between columns */
+			gap: 30px;
 		}
 		.column {
-			flex: 1; /* Each column takes up equal space */
+			flex: 1;
 		}
 
-		/* --- Typography Styling --- */
 		.slogan {
 			color: #C757A3;
-			font-size: 2.2em; /* Adjusted for space */
+			font-size: 2.2em;
 			margin: 0 0 25px 0;
 			text-align: center;
 			text-shadow: 1px 1px 3px #000;
@@ -85,13 +80,12 @@
 			padding-bottom: 5px;
 		}
 
-		/* --- Player List Styling --- */
 		.player-list {
 			font-family: 'Digital7';
 			color: #C757A3;
 			font-size: 2.8em;
 			margin: 5px 0;
-			padding-left: 75px; /* Indent the list */
+			padding-left: 75px;
 			line-height: 1.6;
 			text-align: left;
 			text-shadow: 1px 1px 2px #000;
@@ -102,7 +96,6 @@
 
 		}
 
-		/* --- Progress Bar Styling --- */
 		.progress-bar-container {
 			width: 100%;
 			height: 25px;
@@ -112,12 +105,12 @@
 		}
 		.progress-bar {
 			height: 100%;
-			background-color: #C757A3; /* Corruption color */
-			width: 0%; /* Will be set by JavaScript */
+			background-color: #C757A3;
+			width: 0%;
 			transition: width 0.5s ease-in-out;
 		}
 		.progress-bar.world-progress {
-			background-color: #C757A3; /* World progress color */
+			background-color: #C757A3;
 		}
 		.progress-label {
 			color: #C757A3;
@@ -141,24 +134,23 @@
 		}
 
 		.file-info {
-            font-size: 0.9em; /* Slightly smaller font for hash and VirusTotal */
-            color: #333; /* Darker color to match other text */
-            margin-top: 5px;
+			font-size: 0.9em;
+			color: #333;
+			margin-top: 5px;
 			text-align: center;
-        }
+		}
 
 		.file-info a {
-            color: #444; /* Darker color to match other text */
-        }
+			color: #444;
+		}
 
-		/* --- Trailer Link Styling --- */
 		.trailer-link {
 			display: block;
 			text-align: center;
 			margin-top: 20px;
 			margin-bottom: -20px;
 			color: #C757A3;
-			font-size: 1.7em; /* Slightly smaller than download link */
+			font-size: 1.7em;
 			text-shadow: 2px 2px 4px #000;
 			cursor: pointer;
 		}
@@ -168,15 +160,14 @@
 			text-decoration: underline;
 		}
 
-		/* --- Video Container Styling --- */
 		.video-container {
 			position: relative;
-			padding-bottom: 56.25%; /* 16:9 aspect ratio */
+			padding-bottom: 56.25%;
 			height: 0;
 			overflow: hidden;
 			margin: 20px auto;
 			max-width: 800px;
-			display: none; /* Hidden by default */
+			display: none;
 		}
 		.video-container iframe {
 			position: absolute;
@@ -193,7 +184,6 @@
 
 	<div class="leaderboard">
 		<div class="leaderboard-content">
-			<!-- Column 1: World Stats -->
 			<div class="column">
 				<h2>Top Quote</h2>
 				<h3 id="slogan_display" class="slogan">...</h3>
@@ -211,7 +201,6 @@
 				<p id="world_progress_label" class="progress-label">Loading...</p>
 			</div>
 
-			<!-- Column 2: Recent Top Players -->
 			<div class="column">
 				<h2>Recent Guests</h2>
 				<ol id="player_list_recent" class="player-list">
@@ -219,7 +208,6 @@
 				</ol>
 			</div>
 
-			<!-- Column 3: All-Time Top Players -->
 			<div class="column">
 				<h2>Permanent Residents</h2>
 				<ol id="player_list_alltime" class="player-list">
@@ -234,31 +222,18 @@
 			<iframe src="https://www.youtube.com/embed/DSfNpiF-Ae0?si=efRav4Fs5PNr8c0S" frameborder="0" allowfullscreen></iframe>
 		</div>
 
-		<!--<a href="#" class="download-link" onclick="alert('Currently undergoing updates and maintenance.')">Server Currently Offline</a>-->
 		<a href="https://torgomind.itch.io/low-vile-block" class="download-link">Download v0.15 (itch.io)</a>
 		<a href="https://mega.nz/file/cNIAAQ6D#RTAvue-zDc1oakhbmdAYhzdPOCtKxTJyxBgdq5mKZis" class="download-link">Download v0.15 (mega.nz)</a>
-<!--
-		<div class="file-info">
-            SHA-256 Hash: 69cdf9cbb9420f0bc5f38251d1f9674f633e4b22908c33e9980c3f748a4b3d55
-        </div>
-        <div class="file-info">
-            <a href="https://www.virustotal.com/gui/file/69cdf9cbb9420f0bc5f38251d1f9674f633e4b22908c33e9980c3f748a4b3d55/">VirusTotal Scan Result</a>
-        </div>
--->
 
 	</div>
 
-	<!-- The JavaScript section with the new logic -->
 	<script>
-		// --- Word Arrays for Mantra Conversion (Unchanged) ---
 		const word1=["","Hard","Behold","Dead","The","Awaken","Dripping","Glowing","Pale","Dancing","Again","Cute","Kill","Betray","Let","Sorry","Me","We","Soft","Tasty","No","Yield","Strange","King","Twin","Dark","Dead","Egg","Sharp","My","Your"];const word2=["","Snake","Ear","Ointment","Sirens","Barrel","Slugs","Girls","Bleeding","Fumes","Again","Rulers","Climbers","Guests","Torgo","Meat","They","Varnish","Liquid","Moisture","Drippings","In","The","Suns","Stars","Moons","Tears","Voices","Tongue","Mother","Puppet"];const word3=["","Bleed","Crash","Snarl","Fall","Kill","Burn","Again","Lurking","Forget","Forgotten","Tumble","Said","Drips","Yellow","Night","Sink","Rise","Circle","Flap","Sing","Die","Dissolve","Scream","Bloom","Aches","Dream","Open","Return","Rots","Grows"];
 		function convertMantraCode(code){if(!code||code.length!==6){return"?????";}const index1=parseInt(code.substring(0,2),10);const index2=parseInt(code.substring(2,4),10);const index3=parseInt(code.substring(4,6),10);const w1=word1[index1]||"???";const w2=word2[index2]||"???";const w3=word3[index3]||"???";return`${w1} ${w2} ${w3}`;}
 
-		// --- Supabase and NEW Fetching Logic ---
 		const supabaseUrl = 'https://opvtdykuviyducakpamk.supabase.co';
 		const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9wdnRkeWt1dml5ZHVjYWtwYW1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc4ODY0MzksImV4cCI6MjA2MzQ2MjQzOX0.m1MshrKJ0MOWLheq_3Yx3Rqpz2NspsrjsYbbYWBUSx8';
 
-		// Define the URLs for the three tables
 		const statsUrl = `${supabaseUrl}/rest/v1/World_Stats?id=eq.1&select=*`;
 		const playersRecentUrl = `${supabaseUrl}/rest/v1/Leaderboard_Recent?select=*&order=rank.asc&limit=10`;
 		const playersAllTimeUrl = `${supabaseUrl}/rest/v1/Leaderboard_AllTime?select=*&order=rank.asc&limit=10`;
@@ -267,7 +242,6 @@
 			const headers = { 'apikey': supabaseKey, 'Authorization': `Bearer ${supabaseKey}` };
 
 			try {
-				// Use Promise.all to fetch all three sets of data concurrently
 				const [statsResponse, playersRecentResponse, playersAllTimeResponse] = await Promise.all([
 					fetch(statsUrl, { headers }),
 					fetch(playersRecentUrl, { headers }),
@@ -282,7 +256,6 @@
 				const playersRecentData = await playersRecentResponse.json();
 				const playersAllTimeData = await playersAllTimeResponse.json();
 
-				// --- Update the UI with the fetched data ---
 				updateWorldStats(statsData);
 				updatePlayerList(playersRecentData, 'player_list_recent');
 				updatePlayerList(playersAllTimeData, 'player_list_alltime');
@@ -299,19 +272,16 @@
 			if (data.length === 0) return;
 			const stats = data[0];
 
-			// Update Slogan
 			const mantraCode = stats.top_mantra || "000000";
 			const sloganText = convertMantraCode(mantraCode);
 			document.getElementById('slogan_display').innerText = sloganText;
 
-			// Update Corruption Bar
 			const corruptionLevel = stats.corruption_level || 0;
-			const maxCorruption = 600; // 50 rooms * 12 points
+			const maxCorruption = 600;
 			const corruptionPercent = (corruptionLevel / maxCorruption) * 100;
 			document.getElementById('corruption_bar').style.width = `${corruptionPercent}%`;
 			document.getElementById('corruption_label').innerText = `${Math.floor(corruptionPercent)}%`;
 
-			// Update World Progress Bar
 			const worldProgress = stats.world_timer_progress || 0;
 			const worldProgressPercent = worldProgress * 100;
 			document.getElementById('world_progress_bar').style.width = `${worldProgressPercent}%`;
@@ -320,7 +290,7 @@
 
 		function updatePlayerList(players, elementId) {
 			const playerListElement = document.getElementById(elementId);
-			playerListElement.innerHTML = ''; // Clear the "Loading..." text
+			playerListElement.innerHTML = '';
 
 			if (players.length === 0) {
 				playerListElement.innerHTML = '<li>No players ranked yet.</li>';
@@ -334,10 +304,8 @@
 			});
 		}
 
-		// Initial fetch when the page loads
 		fetchAllData();
 
-		// --- Trailer Toggle Function ---
 		function toggleTrailer() {
 			const videoContainer = document.getElementById('video-container');
 			const trailerLink = document.querySelector('.trailer-link');

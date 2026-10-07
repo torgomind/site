@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Monospace Previewer | TORGOMIND</title>
+	<meta name="description" content="Preview text on a fixed-width monospace grid. A free tool from TORGOMIND.">
+	<link rel="stylesheet" href="../../assets/css/style.css">
+	<link rel="stylesheet" href="../../assets/css/tools.css">
+	<style>
+		.controls {
+			margin: 15px 0;
+			display: flex;
+			gap: 15px;
+			align-items: center;
+			flex-wrap: wrap;
+		}
+
+		#input {
+			width: 100%;
+			height: 200px;
+			resize: vertical;
+			font-size: 14px;
+		}
+
+		.output-container {
+			border: 1px solid var(--color-border-card);
+			background-color: var(--color-field-bg);
+			overflow-x: auto;
+		}
+
+		pre {
+			margin: 0;
+			padding: 15px;
+			font-family: "Courier New", Courier, Consolas, Monaco, monospace;
+			font-size: 14px;
+			font-variant-ligatures: none;
+			white-space: pre;
+			letter-spacing: 0em;
+			word-spacing: 0em;
+			color: var(--color-text-light);
+		}
+	</style>
+</head>
+<body class="tool-page">
+	<div class="tool-shell">
+		<nav class="tool-topbar">
+			<a href="../index.html">« tools</a>
+			<a href="../../index.html">torgomind</a>
+		</nav>
+
+		<h1 class="tool-title">monospace previewer</h1>
+		<p class="tool-sub">every character the same width</p>
+
+		<textarea id="input" placeholder="Paste your text here..."></textarea>
+
+		<div class="controls">
+			<label for="fontSize" class="tool-label">Font Size: <span id="sizeVal">14px</span></label>
+			<input type="range" id="fontSize" min="10" max="30" value="14">
+		</div>
+
+		<div class="output-container">
+			<pre id="output"></pre>
+		</div>
+	</div>
+
+	<script>
+		const input = document.getElementById('input');
+		const output = document.getElementById('output');
+		const fontSize = document.getElementById('fontSize');
+		const sizeVal = document.getElementById('sizeVal');
+
+		function update() {
+			output.textContent = input.value;
+		}
+
+		input.addEventListener('input', update);
+
+		fontSize.addEventListener('input', (e) => {
+			const size = e.target.value + 'px';
+			output.style.fontSize = size;
+			sizeVal.textContent = size;
+		});
+
+		input.value = "An elegant, cross-browser system monospace grid.\nEvery single character occupies identical horizontal width.\n1234567890\nabcdefghij\n!@#$%^&*()";
+		update();
+	</script>
+</body>
+</html>

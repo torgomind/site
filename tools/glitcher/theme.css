@@ -1,0 +1,140 @@
+@font-face {
+	font-family: 'BirchLeaf';
+	src: url('../../assets/fonts/newspaper.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+:root,
+.dark {
+	--background: #0f0000;
+	--foreground: #f7f7f7;
+	--card: #071b0e;
+	--card-foreground: #f7f7f7;
+	--popover: #071b0e;
+	--popover-foreground: #f7f7f7;
+	--primary: #bba2a9;
+	--primary-foreground: #0f0000;
+	--secondary: #1e0707;
+	--secondary-foreground: #f7f7f7;
+	--muted: #1e0707;
+	--muted-foreground: #999999;
+	--accent: #2e0d0d;
+	--accent-foreground: #ffffe5;
+	--border: rgba(142, 125, 167, 0.55);
+	--input: rgba(142, 125, 167, 0.7);
+	--ring: #bba2a9;
+	--color-dark-dialog-background: #071b0e;
+}
+
+html,
+:host,
+body {
+	font-family: "Courier New", Courier, monospace;
+}
+
+h1,
+h2,
+.glitch-topbar a {
+	font-family: 'BirchLeaf', serif;
+}
+
+body {
+	background-color: #0f0000;
+	background-image: url('../../assets/images/background.png');
+	background-attachment: fixed;
+	background-size: cover;
+	background-position: center;
+}
+
+.bg-blue-500,
+.bg-green-500 {
+	color: #ffffe5;
+	background-color: #853a3a;
+}
+
+.hover\:bg-blue-600:hover,
+.hover\:bg-green-600:hover {
+	background-color: #9a4545;
+}
+
+.bg-rose-500 {
+	color: #ffffe5;
+	background-color: #5a1a24;
+}
+
+.hover\:bg-rose-600:hover {
+	background-color: #6e2230;
+}
+
+.text-blue-600,
+.dark\:text-sky-500,
+.text-indigo-600 {
+	color: #bba2a9;
+}
+
+.top-\[0\.6rem\].right-\[0\.5rem\] {
+	display: none;
+}
+
+.glitch-topbar {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 1rem;
+	max-width: 1100px;
+	margin: 0 auto;
+	padding: 16px 16px 0;
+}
+
+.glitch-topbar a {
+	display: inline-block;
+	padding: 0.2rem 0.8rem;
+	font-size: 1.1rem;
+	letter-spacing: 0.1em;
+	text-decoration: none;
+	text-transform: uppercase;
+	color: #bba2a9;
+	background-color: #1e0707;
+	border: 3px solid;
+	border-color: #bba2a9 #000000 #000000 #bba2a9;
+}
+
+.glitch-topbar a:hover {
+	color: #ffffe5;
+	background-color: #2e0d0d;
+	border-color: #000000 #bba2a9 #bba2a9 #000000;
+}
+
+body {
+	flex-direction: column;
+}
+
+.glitch-topbar {
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.dark\:bg-neutral-800 {
+	background-color: #071b0e;
+}
+
+.border-dashed.rounded-2xl {
+	border-color: rgba(142, 125, 167, 0.8);
+}
+
+.dark\:text-neutral-100 {
+	color: #bba2a9;
+}
+
+.bg-indigo-600 {
+	color: #ffffe5;
+	background-color: #853a3a;
+	border-radius: 0;
+	border: 3px solid;
+	border-color: #bba2a9 #000000 #000000 #bba2a9;
+}
+
+.hover\:bg-indigo-700:hover {
+	background-color: #9a4545;
+}

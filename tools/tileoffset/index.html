@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Tile Offset | TORGOMIND</title>
+	<meta name="description" content="Swap an image&#x27;s diagonal quadrants to check that a texture tiles seamlessly. A free tool from TORGOMIND.">
+	<link rel="stylesheet" href="../../assets/css/style.css">
+	<link rel="stylesheet" href="../../assets/css/tools.css">
+	<style>
+		.offset {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+		}
+
+		#drop {
+			width: 100%;
+			max-width: 720px;
+			min-height: 320px;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			padding: 32px;
+		}
+
+		#drop.hasimg {
+			cursor: default;
+			min-height: 0;
+			padding: 16px;
+		}
+
+		#drop .hint b {
+			color: var(--color-primary);
+			font-weight: normal;
+		}
+
+		.hint-small {
+			font-size: 0.9rem;
+		}
+
+		#cv {
+			max-width: 100%;
+			image-rendering: pixelated;
+		}
+
+		.bar {
+			display: flex;
+			gap: 10px;
+			margin-top: 18px;
+			flex-wrap: wrap;
+			justify-content: center;
+		}
+
+		.meta {
+			font-family: var(--font-mono);
+			font-size: 0.8rem;
+			color: var(--color-text-body);
+			margin-top: 12px;
+		}
+
+		#toast {
+			position: fixed;
+			bottom: 24px;
+			left: 50%;
+			transform: translateX(-50%) translateY(20px);
+			padding: 8px 18px;
+			font-size: 1rem;
+			color: var(--color-text-light);
+			background-color: var(--color-primary-dark);
+			border: 2px solid var(--color-primary);
+			opacity: 0;
+			pointer-events: none;
+			transition: opacity 0.2s, transform 0.2s;
+		}
+
+		#toast.show {
+			opacity: 1;
+			transform: translateX(-50%) translateY(0);
+		}
+	</style>
+</head>
+<body class="tool-page">
+	<div class="tool-shell">
+		<nav class="tool-topbar">
+			<a href="../index.html">« tools</a>
+			<a href="../../index.html">torgomind</a>
+		</nav>
+
+		<h1 class="tool-title">tile offset</h1>
+		<p class="tool-sub">swap diagonal quadrants &middot; drop, paste, or click</p>
+
+		<div class="offset">
+			<div id="drop" class="tool-drop">
+				<div class="hint" id="hint">
+					<b>Drop</b> an image, <b>Ctrl+V</b> paste, or <b>click</b> to browse<br>
+					<span class="hint-small">png / jpg &middot; odd sizes floored to nearest pixel</span>
+				</div>
+				<canvas id="cv" class="tool-checker" style="display:none"></canvas>
+				<div class="meta" id="meta"></div>
+			</div>
+
+			<div class="bar">
+				<button class="primary" id="save" disabled>Save PNG</button>
+				<button id="copy" disabled>Copy to Clipboard</button>
+				<button id="reload" disabled>Re-run</button>
+				<button id="clear" disabled>Clear</button>
+			</div>
+		</div>
+
+		<input type="file" id="file" accept="image/png,image/jpeg" style="display:none">
+		<div id="toast"></div>
+	</div>
+
+<script>
+	const drop = document.getElementById("drop");
+	const cv = document.getElementById("cv");
+	const ctx = cv.getContext("2d");
+	const fileInput = document.getElementById("file");
+	const hint = document.getElementById("hint");
+	const meta = document.getElementById("meta");
+	const toast = document.getElementById("toast");
+	const btnSave = document.getElementById("save");
+	const btnCopy = document.getElementById("copy");
+	const btnReload = document.getElementById("reload");
+	const btnClear = document.getElementById("clear");
+
+	let sourceBitmap = null;
+	let sourceName = "tile";
+
+	function showToast(msg) {
+		toast.textContent = msg;
+		toast.classList.add("show");
+		clearTimeout(toast._t);
+		toast._t = setTimeout(() => toast.classList.remove("show"), 1600);
+	}
+
+	function processImage(img) {
+		const w = img.width;
+		const h = img.height;
+		const hx = Math.floor(w / 2);
+		const hy = Math.floor(h / 2);
+		const rw = w - hx;
+		const rh = h - hy;
+
+		cv.width = w;
+		cv.height = h;
+		ctx.clearRect(0, 0, w, h);
+
+		ctx.drawImage(img, hx, hy, rw, rh, 0, 0, rw, rh);
+		ctx.drawImage(img, 0, hy, hx, rh, rw, 0, hx, rh);
+		ctx.drawImage(img, hx, 0, rw, hy, 0, rh, rw, hy);
+		ctx.drawImage(img, 0, 0, hx, hy, rw, rh, hx, hy);
+
+		cv.style.display = "block";
+		hint.style.display = "none";
+		drop.classList.add("hasimg");
+		meta.textContent = `${w} x ${h}  |  split @ ${hx},${hy}`;
+		[btnSave, btnCopy, btnReload, btnClear].forEach(b => b.disabled = false);
+	}
+
+	async function loadFromBlob(blob, name) {
+		if (name) sourceName = name.replace(/\.[^.]+$/, "");
+		try {
+			sourceBitmap = await createImageBitmap(blob);
+			processImage(sourceBitmap);
+		} catch (e) {
+			showToast("Failed to load image");
+		}
+	}
+
+	drop.addEventListener("click", () => { if (!sourceBitmap) fileInput.click(); });
+	fileInput.addEventListener("change", e => {
+		const f = e.target.files[0];
+		if (f) loadFromBlob(f, f.name);
+	});
+
+	["dragenter", "dragover"].forEach(ev =>
+		drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("hover"); }));
+	["dragleave", "drop"].forEach(ev =>
+		drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("hover"); }));
+	drop.addEventListener("drop", e => {
+		const f = e.dataTransfer.files[0];
+		if (f && /image\/(png|jpeg)/.test(f.type)) loadFromBlob(f, f.name);
+		else showToast("Drop a png or jpg");
+	});
+
+	window.addEventListener("paste", e => {
+		for (const item of e.clipboardData.items) {
+			if (item.type.startsWith("image/")) {
+				const f = item.getAsFile();
+				loadFromBlob(f, "pasted");
+				return;
+			}
+		}
+	});
+
+	btnSave.addEventListener("click", () => {
+		cv.toBlob(blob => {
+			const a = document.createElement("a");
+			a.href = URL.createObjectURL(blob);
+			a.download = sourceName + "_offset.png";
+			a.click();
+			URL.revokeObjectURL(a.href);
+		}, "image/png");
+	});
+
+	btnCopy.addEventListener("click", () => {
+		cv.toBlob(async blob => {
+			try {
+				await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
+				showToast("Copied to clipboard");
+			} catch (e) {
+				showToast("Clipboard blocked by browser");
+			}
+		}, "image/png");
+	});
+
+	btnReload.addEventListener("click", () => {
+		if (sourceBitmap) { processImage(sourceBitmap); showToast("Re-run"); }
+	});
+
+	btnClear.addEventListener("click", () => {
+		sourceBitmap = null;
+		fileInput.value = "";
+		cv.style.display = "none";
+		hint.style.display = "block";
+		meta.textContent = "";
+		drop.classList.remove("hasimg");
+		[btnSave, btnCopy, btnReload, btnClear].forEach(b => b.disabled = true);
+	});
+</script>
+</body>
+</html>

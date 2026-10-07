@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Japanese String Generator | TORGOMIND</title>
+	<meta name="description" content="Generate random Japanese kana strings in moods like cat, screamy and sleepy. A free tool from TORGOMIND.">
+	<link rel="stylesheet" href="../../assets/css/style.css">
+	<link rel="stylesheet" href="../../assets/css/tools.css">
+	<style>
+		.wrap {
+			display: flex;
+			flex-direction: column;
+			gap: 1.2rem;
+			max-width: 760px;
+			margin: 0 auto;
+		}
+
+		.controls {
+			display: flex;
+			align-items: center;
+			gap: 16px;
+			flex-wrap: wrap;
+		}
+
+		.controls label {
+			white-space: nowrap;
+		}
+
+		#len-out {
+			font-size: 1.2rem;
+			min-width: 28px;
+			text-align: right;
+			color: var(--color-text-light);
+		}
+
+		.controls input[type="range"] {
+			flex: 1;
+			min-width: 120px;
+		}
+
+		.modes {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 8px;
+		}
+
+		.row-controls {
+			display: flex;
+			align-items: center;
+			gap: 16px;
+			flex-wrap: wrap;
+		}
+
+		.toggle-wrap {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
+
+		.strings {
+			display: flex;
+			flex-direction: column;
+			gap: 8px;
+		}
+
+		.str-row {
+			background-color: var(--color-field-bg);
+			border: 1px solid var(--color-border-card);
+			padding: 10px 14px;
+			font-family: system-ui, sans-serif;
+			font-size: 1.1rem;
+			color: var(--color-text-light);
+			word-break: break-all;
+			line-height: 1.8;
+		}
+
+		.placeholder {
+			color: var(--color-text-body);
+			text-align: center;
+			padding: 2rem 0;
+		}
+	</style>
+</head>
+<body class="tool-page">
+	<div class="tool-shell">
+		<nav class="tool-topbar">
+			<a href="../index.html">« tools</a>
+			<a href="../../index.html">torgomind</a>
+		</nav>
+
+		<h1 class="tool-title">japanese string generator</h1>
+		<p class="tool-sub">random kana in different moods</p>
+
+		<div class="wrap tool-panel">
+			<div class="controls">
+				<label for="len-range" class="tool-label">Characters per string</label>
+				<input type="range" id="len-range" min="1" max="100" value="20" step="1">
+				<span id="len-out">20</span>
+			</div>
+			<div class="modes" id="modes"></div>
+			<div class="row-controls">
+				<div class="toggle-wrap">
+					<input type="checkbox" id="spaces-toggle">
+					<label for="spaces-toggle">With spaces</label>
+				</div>
+				<button class="primary" onclick="generate()">Generate</button>
+			</div>
+			<div class="strings" id="output">
+				<div class="placeholder">Hit generate.</div>
+			</div>
+		</div>
+	</div>
+
+<script>
+const MODES = {
+	'Random':    ['あ','い','う','え','お','か','き','く','け','こ','さ','し','す','せ','そ','た','ち','つ','て','と','な','に','ぬ','ね','の','は','ひ','ふ','へ','ほ','ま','み','む','め','も','や','ゆ','よ','ら','り','る','れ','ろ','わ','を','ん'],
+	'Vowel heavy': ['あ','あ','あ','い','い','う','う','え','え','お','お','あ','い','お','えい','おう','あい','うえ','いえ','おあ'],
+	'Lispy':     ['さ','さ','し','し','す','す','せ','そ','ちゃ','ちゅ','ちょ','ち','し','しゃ','しゅ','しょ','つ','づ','ざ','じ','ず','ぜ','ぞ'],
+	'Screamy':   ['お','お','あ','あ','わ','わ','や','よ','え','ええ','おお','ああ','わあ','やあ','！','！！','おお','あああ'],
+	'Cat':       ['にゃ','にゃ','にゅ','にょ','みゃ','みゅ','みょ','ふ','ふふ','にゃあ','みゃあ','ふにゃ','ぷ','ぷにゃ','にゅう'],
+	'Masculine': ['か','く','こ','が','ぐ','ご','ら','る','ろ','だ','ど','ば','ぼ','む','ん','ぬ','つ','ぞ','ぐ','く'],
+	'Girly':     ['き','きゃ','きゅ','きょ','ぴ','ぴゃ','ぴゅ','ぴょ','み','みゃ','りゃ','ひ','ひゃ','いい','えい','ふわ'],
+	'Whispery':  ['は','ひ','ふ','へ','ほ','は','ふ','へ','し','す','つ','わ','ゆ','ほ','ほう','ふわ','はあ'],
+	'Growly':    ['が','ぎ','ぐ','げ','ご','ざ','じ','ず','ぜ','ぞ','だ','ぢ','づ','で','ど','ば','び','ぶ','べ','ぼ'],
+	'Sleepy':    ['む','む','ん','ん','ふ','ぬ','のう','むう','んん','ふう','ねむ','うむ','ぬう'],
+};
+
+let currentMode = 'Random';
+
+const modesEl = document.getElementById('modes');
+const slider = document.getElementById('len-range');
+const lenOut = document.getElementById('len-out');
+const output = document.getElementById('output');
+const spacesToggle = document.getElementById('spaces-toggle');
+
+Object.keys(MODES).forEach(name => {
+	const btn = document.createElement('button');
+	btn.className = 'mode-btn' + (name === currentMode ? ' active' : '');
+	btn.textContent = name;
+	btn.onclick = () => {
+		currentMode = name;
+		document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+		btn.classList.add('active');
+	};
+	modesEl.appendChild(btn);
+});
+
+slider.addEventListener('input', () => { lenOut.textContent = slider.value; });
+
+function pick(pool) {
+	return pool[Math.floor(Math.random() * pool.length)];
+}
+
+function generate() {
+	const len = parseInt(slider.value);
+	const useSpaces = spacesToggle.checked;
+	const pool = MODES[currentMode];
+	output.innerHTML = '';
+
+	for (let i = 0; i < 5; i++) {
+		let chars = [];
+		for (let j = 0; j < len; j++) {
+			chars.push(pick(pool));
+		}
+
+		let str = '';
+		if (useSpaces) {
+			const numSpaces = Math.floor(Math.random() * 5) + 1;
+			const positions = new Set();
+			while (positions.size < Math.min(numSpaces, len - 1)) {
+				positions.add(Math.floor(Math.random() * (len - 1)) + 1);
+			}
+			chars.forEach((c, idx) => {
+				str += c;
+				if (positions.has(idx + 1)) str += ' ';
+			});
+		} else {
+			str = chars.join('');
+		}
+
+		const div = document.createElement('div');
+		div.className = 'str-row';
+		div.textContent = str;
+		output.appendChild(div);
+	}
+}
+</script>
+</body>
+</html>

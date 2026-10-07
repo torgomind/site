@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Sprite Slicer | TORGOMIND</title>
+	<meta name="description" content="Cut a sprite sheet into tiles and download them as a zip. A free tool from TORGOMIND.">
+	<link rel="stylesheet" href="../../assets/css/style.css">
+	<link rel="stylesheet" href="../../assets/css/tools.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+	<style>
+		.wrap {
+			display: grid;
+			grid-template-columns: 300px 1fr;
+			gap: 20px;
+		}
+
+		.wrap label {
+			display: block;
+			margin: 14px 0 5px;
+		}
+
+		.wrap label:first-of-type {
+			margin-top: 0;
+		}
+
+		.wrap input[type="text"],
+		.wrap input[type="number"],
+		.wrap select {
+			width: 100%;
+		}
+
+		.row {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 10px;
+		}
+
+		#go {
+			width: 100%;
+			margin-top: 18px;
+			padding: 0.5rem;
+		}
+
+		.meta {
+			border-top: 1px solid var(--color-border-card);
+			margin-top: 18px;
+			padding-top: 14px;
+			color: var(--color-text-body);
+			font-size: 1rem;
+		}
+
+		.meta b {
+			color: var(--color-text-light);
+			font-weight: normal;
+		}
+
+		.warn {
+			color: #d98b6a;
+		}
+
+		#grid {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 6px;
+			align-content: flex-start;
+		}
+
+		#grid canvas {
+			border: 1px solid var(--color-border-card);
+			image-rendering: pixelated;
+			width: 84px;
+			height: 84px;
+			object-fit: contain;
+			background-color: var(--color-checker-b);
+			background-image: repeating-conic-gradient(var(--color-checker-a) 0% 25%, var(--color-checker-b) 0% 50%);
+			background-size: 12px 12px;
+		}
+
+		.empty {
+			color: var(--color-text-body);
+			padding: 40px 0;
+			text-align: center;
+			width: 100%;
+		}
+
+		.drop {
+			padding: 14px;
+		}
+	</style>
+</head>
+<body class="tool-page">
+	<div class="tool-shell">
+		<nav class="tool-topbar">
+			<a href="../index.html">« tools</a>
+			<a href="../../index.html">torgomind</a>
+		</nav>
+
+		<h1 class="tool-title">sprite slicer</h1>
+		<p class="tool-sub">cut a sheet into tiles, download as a zip</p>
+
+		<div class="wrap">
+			<div class="tool-panel">
+				<div class="drop tool-drop" id="drop">Drop a PNG here, or click to browse</div>
+				<input type="file" id="file" accept="image/*" hidden>
+
+				<label class="tool-label">Tile size (px)</label>
+				<div class="row">
+					<input type="number" id="tw" value="256" min="1">
+					<input type="number" id="th" value="256" min="1">
+				</div>
+
+				<label class="tool-label">Naming</label>
+				<select id="naming">
+					<option value="index">name_00, name_01</option>
+					<option value="rowcol">name_r0_c0</option>
+				</select>
+
+				<label class="tool-label">Base name</label>
+				<input type="text" id="base" value="sprite">
+
+				<label class="tool-label"><input type="checkbox" id="skip" checked> Skip blank tiles</label>
+
+				<button id="go" class="primary" disabled>Download ZIP</button>
+
+				<div class="meta" id="meta">No image loaded.</div>
+			</div>
+			<div class="tool-panel">
+				<div id="grid"><div class="empty">Sliced tiles appear here.</div></div>
+			</div>
+		</div>
+	</div>
+<script>
+	const drop = document.getElementById("drop");
+	const file = document.getElementById("file");
+	const tw = document.getElementById("tw");
+	const th = document.getElementById("th");
+	const naming = document.getElementById("naming");
+	const base = document.getElementById("base");
+	const skip = document.getElementById("skip");
+	const go = document.getElementById("go");
+	const meta = document.getElementById("meta");
+	const grid = document.getElementById("grid");
+
+	let img = null;
+	let tiles = [];
+
+	drop.onclick = () => file.click();
+	drop.ondragover = e => { e.preventDefault(); drop.classList.add("over"); };
+	drop.ondragleave = () => drop.classList.remove("over");
+	drop.ondrop = e => {
+		e.preventDefault();
+		drop.classList.remove("over");
+		if (e.dataTransfer.files[0]) load(e.dataTransfer.files[0]);
+	};
+	file.onchange = () => { if (file.files[0]) load(file.files[0]); };
+	[tw, th, naming, base, skip].forEach(el => el.onchange = slice);
+
+	function load(f) {
+		const url = URL.createObjectURL(f);
+		const i = new Image();
+		i.onload = () => {
+			img = i;
+			drop.textContent = f.name;
+			base.value = f.name.replace(/\.[^.]+$/, "");
+			slice();
+		};
+		i.src = url;
+	}
+
+	function isBlank(ctx, w, h) {
+		const d = ctx.getImageData(0, 0, w, h).data;
+		for (let i = 3; i < d.length; i += 4) if (d[i] !== 0) return false;
+		return true;
+	}
+
+	function slice() {
+		if (!img) return;
+		const w = Math.max(1, parseInt(tw.value) || 1);
+		const h = Math.max(1, parseInt(th.value) || 1);
+		const cols = Math.floor(img.width / w);
+		const rows = Math.floor(img.height / h);
+		tiles = [];
+		grid.innerHTML = "";
+
+		if (cols < 1 || rows < 1) {
+			meta.innerHTML = '<span class="warn">Tile size is larger than the image.</span>';
+			go.disabled = true;
+			return;
+		}
+
+		let blanks = 0;
+		for (let r = 0; r < rows; r++) {
+			for (let c = 0; c < cols; c++) {
+				const cv = document.createElement("canvas");
+				cv.width = w;
+				cv.height = h;
+				const ctx = cv.getContext("2d", { willReadFrequently: true });
+				ctx.drawImage(img, c * w, r * h, w, h, 0, 0, w, h);
+				if (skip.checked && isBlank(ctx, w, h)) { blanks++; continue; }
+				const n = naming.value === "rowcol"
+					? base.value + "_r" + r + "_c" + c
+					: base.value + "_" + String(tiles.length).padStart(2, "0");
+				tiles.push({ canvas: cv, name: n + ".png" });
+				cv.title = n;
+				grid.appendChild(cv);
+			}
+		}
+
+		const rem = [img.width % w, img.height % h];
+		let txt = "<b>" + img.width + " x " + img.height + "</b> source<br>";
+		txt += "<b>" + cols + " x " + rows + "</b> grid, <b>" + tiles.length + "</b> tiles";
+		if (blanks) txt += "<br>" + blanks + " blank skipped";
+		if (rem[0] || rem[1]) txt += '<br><span class="warn">' + rem[0] + "px x " + rem[1] + "px edge remainder ignored</span>";
+		meta.innerHTML = txt;
+		go.disabled = tiles.length === 0;
+	}
+
+	go.onclick = async () => {
+		go.disabled = true;
+		go.textContent = "Packing...";
+		const zip = new JSZip();
+		for (const t of tiles) {
+			const blob = await new Promise(res => t.canvas.toBlob(res, "image/png"));
+			zip.file(t.name, blob);
+		}
+		const out = await zip.generateAsync({ type: "blob" });
+		const a = document.createElement("a");
+		a.href = URL.createObjectURL(out);
+		a.download = base.value + "_sprites.zip";
+		a.click();
+		go.textContent = "Download ZIP";
+		go.disabled = false;
+	};
+</script>
+</body>
+</html>

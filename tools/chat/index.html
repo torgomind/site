@@ -3,8 +3,10 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>TORGOMIND : Chat</title>
+	<title>Chatroom | TORGOMIND</title>
+	<meta name="description" content="An anonymous live 24/7 chatroom from TORGOMIND.">
 	<link rel="stylesheet" href="../../assets/css/style.css">
+	<script>if (new URLSearchParams(window.location.search).has("embed")) { document.documentElement.classList.add("embed"); }</script>
 	<style>
 		@font-face {
 			font-family: 'Filgaia';
@@ -15,10 +17,10 @@
 
 		body {
 			background-color: #020a04;
-			background-image: url('slimegirl1.gif');
+			background-image: url('slimebg.gif');
 			background-repeat: repeat;
 			background-position: center top;
-			background-size: 200px;
+			background-size: 400px;
 			background-attachment: fixed;
 			image-rendering: pixelated;
 			font-family: 'Courier New', Courier, monospace;
@@ -236,16 +238,68 @@
 				padding: 0.3rem 0.8rem;
 			}
 		}
+
+		.embed body {
+			background-size: 120px;
+		}
+
+		.embed .chat-header,
+		.embed .back-link,
+		.embed .chat-note {
+			display: none;
+		}
+
+		.embed .chat-wrapper {
+			min-height: 0;
+			height: 100vh;
+			padding: 0;
+		}
+
+		.embed .chat-panel {
+			flex: 1;
+			min-height: 0;
+			max-width: none;
+			gap: 0.5rem;
+			padding: 0.5rem;
+			border: 0;
+			border-radius: 0;
+		}
+
+		.embed #log {
+			flex: 1;
+			height: auto;
+			min-height: 0;
+			max-height: none;
+		}
+
+		.embed .msg,
+		.embed #input,
+		.embed #send {
+			font-size: 1rem;
+		}
+
+		.embed #log:empty::before {
+			font-size: 1rem;
+		}
+
+		.embed .time {
+			font-size: 0.8rem;
+		}
+
+		.embed #status {
+			min-height: 1.2em;
+			font-size: 0.85rem;
+		}
 	</style>
 </head>
 <body>
 	<div class="chat-wrapper">
 		<header class="chat-header">
-			<h1>REAL SLIMEGIRLS</h1>
+			<h1>TORGOZONE CHATROOM</h1>
 			<p class="chat-subtitle">live 24/7 webchat</p>
 		</header>
 
-		<a href="../../index.html" class="back-link">← back</a>
+		<a href="../index.html" class="back-link">← tools</a>
 
 		<main class="chat-panel">
 			<div id="log"></div>

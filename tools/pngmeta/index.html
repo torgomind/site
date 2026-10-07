@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>PNG Metadata Reader | TORGOMIND</title>
+	<meta name="description" content="Read the text metadata hidden in PNG files, including AI image prompts. A free tool from TORGOMIND.">
+	<link rel="stylesheet" href="../../assets/css/style.css">
+	<link rel="stylesheet" href="../../assets/css/tools.css">
+	<style>
+		#drop {
+			padding: 48px 24px;
+		}
+
+		#out {
+			margin-top: 24px;
+		}
+
+		.block {
+			background-color: var(--color-bg-card);
+			border: 1px solid var(--color-border-card);
+			border-radius: 5px;
+			margin-bottom: 16px;
+			overflow: hidden;
+		}
+
+		.block-head {
+			padding: 6px 14px;
+			font-size: 1rem;
+			letter-spacing: 0.08em;
+			color: var(--color-text-light);
+			background-color: var(--color-primary-dark);
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			gap: 1rem;
+		}
+
+		.tool-page .copy {
+			font-size: 0.85rem;
+			padding: 0.1rem 0.6rem;
+			border-width: 2px;
+		}
+
+		pre {
+			padding: 14px;
+			white-space: pre-wrap;
+			word-break: break-word;
+			font-family: var(--font-mono);
+			font-size: 12px;
+			max-height: 400px;
+			overflow-y: auto;
+			color: var(--color-text-light);
+		}
+
+		.field {
+			margin-bottom: 10px;
+		}
+
+		.field-label {
+			font-size: 0.9rem;
+			letter-spacing: 0.1em;
+			text-transform: uppercase;
+			color: var(--color-primary);
+		}
+
+		.field-val {
+			display: block;
+			margin-top: 2px;
+			font-family: var(--font-mono);
+			font-size: 13px;
+			color: var(--color-text-light);
+			white-space: pre-wrap;
+		}
+
+		.empty {
+			color: var(--color-text-body);
+			font-style: italic;
+			padding: 14px;
+		}
+	</style>
+</head>
+<body class="tool-page">
+	<div class="tool-shell">
+		<nav class="tool-topbar">
+			<a href="../index.html">« tools</a>
+			<a href="../../index.html">torgomind</a>
+		</nav>
+
+		<h1 class="tool-title">png metadata reader</h1>
+		<p class="tool-sub">read the text chunks hidden in a png</p>
+
+		<div id="drop" class="tool-drop">Drop a PNG here, or click to pick a file</div>
+		<input type="file" id="file" accept="image/png" style="display:none">
+		<div id="out"></div>
+	</div>
+<script>
+const drop = document.getElementById('drop');
+const fileInput = document.getElementById('file');
+const out = document.getElementById('out');
+
+drop.addEventListener('click', () => fileInput.click());
+fileInput.addEventListener('change', e => { if (e.target.files[0]) handle(e.target.files[0]); });
+
+drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('hover'); });
+drop.addEventListener('dragleave', () => drop.classList.remove('hover'));
+drop.addEventListener('drop', e => {
+	e.preventDefault();
+	drop.classList.remove('hover');
+	if (e.dataTransfer.files[0]) handle(e.dataTransfer.files[0]);
+});
+
+function handle(file) {
+	const reader = new FileReader();
+	reader.onload = e => parsePNG(new Uint8Array(e.target.result));
+	reader.readAsArrayBuffer(file);
+}
+
+function parsePNG(bytes) {
+	out.innerHTML = '';
+	if (bytes[0] !== 0x89 || bytes[1] !== 0x50) {
+		out.innerHTML = '<div class="block"><div class="empty">Not a valid PNG file.</div></div>';
+		return;
+	}
+	const chunks = [];
+	let pos = 8;
+	while (pos < bytes.length) {
+		const len = (bytes[pos]<<24 | bytes[pos+1]<<16 | bytes[pos+2]<<8 | bytes[pos+3]) >>> 0;
+		const type = String.fromCharCode(bytes[pos+4], bytes[pos+5], bytes[pos+6], bytes[pos+7]);
+		const dataStart = pos + 8;
+		if (type === 'tEXt') chunks.push(readTEXt(bytes, dataStart, len));
+		else if (type === 'iTXt') chunks.push(readITXt(bytes, dataStart, len));
+		else if (type === 'zTXt') chunks.push(readZTXt(bytes, dataStart, len));
+		if (type === 'IEND') break;
+		pos = dataStart + len + 4;
+	}
+	if (!chunks.length) {
+		out.innerHTML = '<div class="block"><div class="empty">No text metadata found in this PNG.</div></div>';
+		return;
+	}
+	chunks.forEach(c => render(c.key, c.value));
+	renderRawDump(chunks);
+}
+
+function renderRawDump(chunks) {
+	const block = document.createElement('div');
+	block.className = 'block';
+	const head = document.createElement('div');
+	head.className = 'block-head';
+	head.innerHTML = `<span>RAW DUMP (all chunks, verbatim)</span>`;
+	const copy = document.createElement('button');
+	copy.className = 'copy';
+	copy.textContent = 'Copy';
+	const full = chunks.map(c => `[${c.key}]\n${c.value}`).join('\n\n');
+	copy.onclick = () => { navigator.clipboard.writeText(full); copy.textContent = 'Copied'; setTimeout(()=>copy.textContent='Copy',1200); };
+	head.appendChild(copy);
+	block.appendChild(head);
+	const pre = document.createElement('pre');
+	pre.style.color = 'var(--color-text-body)';
+	pre.textContent = full;
+	block.appendChild(pre);
+	out.appendChild(block);
+}
+
+function readTEXt(bytes, start, len) {
+	let i = start;
+	let key = '';
+	while (bytes[i] !== 0 && i < start + len) key += String.fromCharCode(bytes[i++]);
+	i++;
+	const value = decodeUTF8(bytes.slice(i, start + len));
+	return { key, value };
+}
+
+function readITXt(bytes, start, len) {
+	let i = start;
+	let key = '';
+	while (bytes[i] !== 0 && i < start + len) key += String.fromCharCode(bytes[i++]);
+	i++;
+	i++;
+	i++;
+	while (bytes[i] !== 0 && i < start + len) i++;
+	i++;
+	while (bytes[i] !== 0 && i < start + len) i++;
+	i++;
+	const value = decodeUTF8(bytes.slice(i, start + len));
+	return { key, value };
+}
+
+function readZTXt(bytes, start, len) {
+	let i = start;
+	let key = '';
+	while (bytes[i] !== 0 && i < start + len) key += String.fromCharCode(bytes[i++]);
+	return { key, value: '[compressed zTXt chunk, not decoded]' };
+}
+
+function decodeUTF8(arr) {
+	try { return new TextDecoder('utf-8').decode(arr); }
+	catch { return String.fromCharCode.apply(null, arr); }
+}
+
+function tryParseJSON(str) {
+	try { return JSON.parse(str); } catch { return null; }
+}
+
+function render(key, value) {
+	const block = document.createElement('div');
+	block.className = 'block';
+	const head = document.createElement('div');
+	head.className = 'block-head';
+	head.innerHTML = `<span>${key}</span>`;
+	const copy = document.createElement('button');
+	copy.className = 'copy';
+	copy.textContent = 'Copy';
+	copy.onclick = () => { navigator.clipboard.writeText(value); copy.textContent = 'Copied'; setTimeout(()=>copy.textContent='Copy',1200); };
+	head.appendChild(copy);
+	block.appendChild(head);
+
+	const body = document.createElement('div');
+	const json = tryParseJSON(value);
+
+	if (key === 'parameters') {
+		body.innerHTML = renderA1111(value);
+	} else if (json) {
+		const pre = document.createElement('pre');
+		const extracted = extractComfyPrompts(json);
+		pre.innerHTML = extracted ? extracted + '\n\n' + escapeHtml(JSON.stringify(json, null, 2)) : escapeHtml(JSON.stringify(json, null, 2));
+		body.appendChild(pre);
+	} else {
+		const pre = document.createElement('pre');
+		pre.textContent = value;
+		body.appendChild(pre);
+	}
+	block.appendChild(body);
+	out.appendChild(block);
+}
+
+function renderA1111(text) {
+	const negIdx = text.indexOf('Negative prompt:');
+	let pos = text.search(/\nSteps:/);
+	let positive, negative = '', settings = '';
+	if (negIdx >= 0) {
+		positive = text.slice(0, negIdx).trim();
+		const rest = text.slice(negIdx + 16);
+		const sIdx = rest.search(/\nSteps:/);
+		if (sIdx >= 0) { negative = rest.slice(0, sIdx).trim(); settings = rest.slice(sIdx).trim(); }
+		else negative = rest.trim();
+	} else if (pos >= 0) {
+		positive = text.slice(0, pos).trim();
+		settings = text.slice(pos).trim();
+	} else {
+		positive = text.trim();
+	}
+	let html = `<div style="padding:14px">`;
+	html += field('Positive', positive);
+	if (negative) html += field('Negative', negative);
+	if (settings) html += field('Settings', settings);
+	html += `</div>`;
+	return html;
+}
+
+function extractComfyPrompts(json) {
+	const texts = [];
+	function walk(o) {
+		if (o && typeof o === 'object') {
+			if (o.class_type && o.inputs && typeof o.inputs.text === 'string' && o.inputs.text.trim()) {
+				texts.push(o.inputs.text.trim());
+			}
+			for (const k in o) walk(o[k]);
+		}
+	}
+	walk(json);
+	if (!texts.length) return null;
+	let html = '';
+	texts.forEach((t, i) => { html += `--- CLIP text ${i+1} ---\n${escapeHtml(t)}\n\n`; });
+	return html.trim();
+}
+
+function field(label, val) {
+	return `<div class="field"><span class="field-label">${label}</span><span class="field-val">${escapeHtml(val)}</span></div>`;
+}
+
+function escapeHtml(s) {
+	return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+</script>
+</body>
+</html>
