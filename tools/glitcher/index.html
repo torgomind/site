@@ -12636,14 +12636,6 @@ const Qw = [["path", {
     key: "brsn70"
 }]]
   , cv = Zt("download", Qw);
-const Kw = [["path", {
-    d: "M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8",
-    key: "5wwlr5"
-}], ["path", {
-    d: "M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z",
-    key: "r6nss1"
-}]]
-  , Pw = Zt("house", Kw);
 const Zw = [["circle", {
     cx: "12",
     cy: "12",
@@ -12662,11 +12654,6 @@ const Ww = [["path", {
     key: "13zald"
 }]]
   , Jw = Zt("loader-circle", Ww);
-const eS = [["path", {
-    d: "M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401",
-    key: "kfwtm"
-}]]
-  , tS = Zt("moon", eS);
 const nS = [["path", {
     d: "m15 9-6 6",
     key: "1uzhvr"
@@ -12686,47 +12673,6 @@ const lS = [["path", {
     key: "rg3s36"
 }]]
   , rS = Zt("rewind", lS);
-const oS = [["path", {
-    d: "M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915",
-    key: "1i5ecw"
-}], ["circle", {
-    cx: "12",
-    cy: "12",
-    r: "3",
-    key: "1v7zrd"
-}]]
-  , iS = Zt("settings", oS);
-const sS = [["circle", {
-    cx: "12",
-    cy: "12",
-    r: "4",
-    key: "4exip2"
-}], ["path", {
-    d: "M12 2v2",
-    key: "tus03m"
-}], ["path", {
-    d: "M12 20v2",
-    key: "1lh1kg"
-}], ["path", {
-    d: "m4.93 4.93 1.41 1.41",
-    key: "149t6j"
-}], ["path", {
-    d: "m17.66 17.66 1.41 1.41",
-    key: "ptbguv"
-}], ["path", {
-    d: "M2 12h2",
-    key: "1t8f8n"
-}], ["path", {
-    d: "M20 12h2",
-    key: "1q8mjw"
-}], ["path", {
-    d: "m6.34 17.66-1.41 1.41",
-    key: "1m8zz5"
-}], ["path", {
-    d: "m19.07 4.93-1.41 1.41",
-    key: "1shlcs"
-}]]
-  , cS = Zt("sun", sS);
 const uS = [["path", {
     d: "m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3",
     key: "wmoenq"
@@ -27597,144 +27543,7 @@ const FR = ({plte: a, editableData: r, onDataChange: o}) => {
         })]
     })
 }
-  , qR = () => {
-    const a = x.use(f0);
-    if (a === void 0)
-        throw new Error("useTheme must be used within a ThemeProvider");
-    return a
-}
-  , Qs = ({question: a, children: r}) => d.jsxs(d.Fragment, {
-    children: [d.jsx("div", {
-        style: {
-            marginTop: "0.75rem"
-        },
-        className: "text-lg font-semibold",
-        children: a
-    }), d.jsx("div", {
-        style: {
-            display: "flex",
-            flexDirection: "column",
-            gap: "0.5rem"
-        },
-        children: r
-    })]
-});
-function XR() {
-    const a = ao("(min-width: 768px)")
-      , r = d.jsxs(d.Fragment, {
-        children: [d.jsx("div", {
-            children: "This app is for creating glitch art."
-        }), d.jsxs("div", {
-            style: {
-                display: "flex",
-                flexDirection: "column",
-                gap: "0.5rem"
-            },
-            children: [d.jsx(Qs, {
-                question: "How do I use this? Is there a tutorial?",
-                children: d.jsxs("div", {
-                    children: ["I created a short video about the tool framed around the idea of what happens when you edit a jpeg in a text editor. You can watch it below.", d.jsx("iframe", {
-                        width: "560",
-                        height: "315",
-                        src: "https://www.youtube.com/embed/7aWFHn1wS1U?si=ju73uX8KzL1jJw1P",
-                        title: "YouTube video player",
-                        frameBorder: "0",
-                        allow: "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share",
-                        referrerPolicy: "strict-origin-when-cross-origin",
-                        allowFullScreen: !0
-                    }), "Skip to 0:55 for an overview of the tool (and to skip the introduction). Don't be afraid to experiment, experimentation is your friend with this app."]
-                })
-            }), d.jsx(Qs, {
-                question: "What image formats are supported?",
-                children: d.jsx("div", {
-                    children: "Technically any image you can view in a web browser will work, but only jpeg, png, gif, webp, and bmp files will have section highlighting in the hex editor. I plan on adding support for more formats in the future."
-                })
-            }), d.jsxs(Qs, {
-                question: "The image looks different after I download it, why?",
-                children: [d.jsx("div", {
-                    children: `If you're downloading the glitched file, it's because different image viewers will render the glitched file differently. You can try the "Download Visual Image" option (though see my caveat in the next paragraph). However, to get the best result, simply open the glitched file in the same web browser you created it in and take a screen shot.`
-                }), d.jsx("div", {
-                    children: "If you're downloading the visual image, you may notice that it sometimes looks different. This is due to how browsers work, it's hard to mimic the rendering of the img tag. I'm going to continue to work on this option, but for now, it's imperfect."
-                })]
-            }), d.jsx(Qs, {
-                question: "Contact?",
-                children: d.jsxs("div", {
-                    children: ["You can reach me at", " ", d.jsx(ax, {
-                        href: "mailto:patorjk@gmail.com",
-                        label: "patorjk@gmail.com"
-                    })]
-                })
-            })]
-        })]
-    })
-      , o = d.jsxs(De, {
-        className: "inline-flex items-center gap-2 px-6 py-3 mr-0",
-        variant: "outline",
-        children: [d.jsx(ci, {
-            className: "w-5 h-5"
-        }), d.jsx("span", {
-            children: "About"
-        })]
-    });
-    return a ? d.jsx(qr, {
-        children: d.jsxs("form", {
-            className: "mr-0",
-            children: [d.jsx(Ld, {
-                asChild: !0,
-                children: o
-            }), d.jsxs(Xr, {
-                className: "dark:bg-dark-dialog-background md:max-w-2xl max-sm:max-w-[425px]",
-                children: [d.jsxs($r, {
-                    children: [d.jsx(Kr, {
-                        children: "About This App"
-                    }), d.jsx(Pr, {})]
-                }), d.jsx("div", {
-                    className: "grid gap-1 max-h-[500px] overflow-auto",
-                    children: r
-                }), d.jsx(Qr, {
-                    children: d.jsx(Il, {
-                        asChild: !0,
-                        children: d.jsx(De, {
-                            variant: "outline",
-                            children: "Close"
-                        })
-                    })
-                })]
-            })]
-        })
-    }) : d.jsxs(Zr, {
-        children: [d.jsx(Gd, {
-            asChild: !0,
-            children: o
-        }), d.jsxs(Wr, {
-            className: "dark:bg-dark-dialog-background",
-            children: [d.jsxs(Jr, {
-                className: "text-left",
-                children: [d.jsx(to, {
-                    children: "About This App"
-                }), d.jsx(no, {})]
-            }), d.jsx("div", {
-                style: {
-                    overflow: "auto",
-                    padding: "1rem",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "0.5rem"
-                },
-                children: r
-            }), d.jsx(eo, {
-                className: "pt-2",
-                children: d.jsx(Fl, {
-                    asChild: !0,
-                    children: d.jsx(De, {
-                        variant: "outline",
-                        children: "Close"
-                    })
-                })
-            })]
-        })]
-    })
-}
+;
 const lx = "glitch-editor-tabs-mode"
   , rx = () => {
     const [a,r] = Vd(lx, "no")
@@ -27755,121 +27564,16 @@ const lx = "glitch-editor-tabs-mode"
     })
 }
 ;
-function $R() {
-    const a = ao("(min-width: 768px)")
-      , r = d.jsx(d.Fragment, {
-        children: d.jsx("div", {
-            style: {
-                display: "flex",
-                flexDirection: "row",
-                gap: "0.5rem"
-            },
-            children: d.jsx(rx, {})
-        })
-    })
-      , o = d.jsxs(De, {
-        className: "inline-flex items-center gap-2 px-6 py-3 mr-0",
-        variant: "outline",
-        children: [d.jsx(iS, {
-            className: "w-5 h-5"
-        }), d.jsx("span", {
-            children: "Settings"
-        })]
-    });
-    return a ? d.jsx(qr, {
-        children: d.jsxs("form", {
-            className: "mr-0",
-            children: [d.jsx(Ld, {
-                asChild: !0,
-                children: o
-            }), d.jsxs(Xr, {
-                className: "dark:bg-dark-dialog-background md:max-w-2xl max-sm:max-w-[425px]",
-                children: [d.jsxs($r, {
-                    children: [d.jsx(Kr, {
-                        children: "Settings"
-                    }), d.jsx(Pr, {})]
-                }), d.jsx("div", {
-                    className: "grid gap-1 max-h-[500px] overflow-auto",
-                    children: r
-                }), d.jsx(Qr, {
-                    children: d.jsx(Il, {
-                        asChild: !0,
-                        children: d.jsx(De, {
-                            variant: "outline",
-                            children: "Close"
-                        })
-                    })
-                })]
-            })]
-        })
-    }) : d.jsxs(Zr, {
-        children: [d.jsx(Gd, {
-            asChild: !0,
-            children: o
-        }), d.jsxs(Wr, {
-            className: "dark:bg-dark-dialog-background",
-            children: [d.jsxs(Jr, {
-                className: "text-left",
-                children: [d.jsx(to, {
-                    children: "About This App"
-                }), d.jsx(no, {})]
-            }), d.jsx("div", {
-                style: {
-                    overflow: "auto",
-                    padding: "1rem",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "0.5rem"
-                },
-                children: r
-            }), d.jsx(eo, {
-                className: "pt-2",
-                children: d.jsx(Fl, {
-                    asChild: !0,
-                    children: d.jsx(De, {
-                        variant: "outline",
-                        children: "Close"
-                    })
-                })
-            })]
+const QR = () => d.jsx("div", {
+    className: "mt-12 pb-6 text-center text-xs text-muted-foreground",
+    children: d.jsxs("p", {
+        children: ["created by ", d.jsx("a", {
+            href: "https://patorjk.com/",
+            className: "underline",
+            children: "Patrick Gillespie"
         })]
     })
-}
-const QR = () => {
-    const {theme: a, setTheme: r} = qR()
-      , o = window.matchMedia("(prefers-color-scheme: dark)")
-      , i = a === "dark" || a === "system" && o.matches
-      , s = x.useCallback(m => {
-        r(m ? "dark" : "light")
-    }
-    , [r])
-      , u = () => {
-        window.location.href = "https://patorjk.com/"
-    }
-    ;
-    return d.jsxs("div", {
-        className: "mt-12 pb-6 text-center flex flex-wrap gap-4 flex-cols align-center justify-center space-x-4",
-        children: [d.jsx(XR, {}), d.jsx($R, {}), d.jsxs(De, {
-            variant: "outline",
-            onClick: () => u(),
-            className: "inline-flex items-center gap-2 px-6 py-3 mr-0",
-            children: [d.jsx(Pw, {
-                className: "w-5 h-5 "
-            }), d.jsx("span", {
-                children: "Home"
-            })]
-        }), d.jsxs(De, {
-            variant: "outline",
-            onClick: () => s(!i),
-            className: "px-6 py-3 flex flex-cols items-center gap-2 justify-center mr-0",
-            children: [i ? d.jsx(cS, {
-                className: "w-5 h-5 text-yellow-400"
-            }) : d.jsx(tS, {
-                className: "w-5 h-5 text-indigo-600"
-            }), " ", "Theme"]
-        })]
-    })
-}
+})
 ;
 var Ec = "Tabs"
   , [KR] = ml(Ec, [xc])

@@ -138,3 +138,11 @@ body {
 .hover\:bg-indigo-700:hover {
 	background-color: #9a4545;
 }
+
+.text-muted-foreground a {
+	color: #bba2a9;
+}
+
+.text-muted-foreground a:hover {
+	color: #ffffe5;
+}
