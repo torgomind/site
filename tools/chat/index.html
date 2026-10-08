@@ -143,7 +143,40 @@
 		.name.admin {
 			color: var(--color-primary);
 			letter-spacing: 0.08em;
-			text-shadow: 0 0 8px rgba(192, 80, 80, 0.8);
+			animation: admin-glow 2.4s ease-in-out infinite;
+		}
+
+		.name.admin .wiggle {
+			display: inline-block;
+			animation: admin-wiggle 1.2s ease-in-out infinite;
+		}
+
+		@keyframes admin-wiggle {
+			0%, 100% {
+				transform: translateY(0) rotate(0deg);
+			}
+			25% {
+				transform: translateY(-3px) rotate(-6deg);
+			}
+			75% {
+				transform: translateY(2px) rotate(6deg);
+			}
+		}
+
+		@keyframes admin-glow {
+			0%, 100% {
+				text-shadow: 0 0 4px rgba(192, 80, 80, 0.5);
+			}
+			50% {
+				text-shadow: 0 0 12px rgba(230, 90, 90, 1);
+			}
+		}
+
+		@media (prefers-reduced-motion: reduce) {
+			.name.admin,
+			.name.admin .wiggle {
+				animation: none;
+			}
 		}
 
 		.msg .name::after {

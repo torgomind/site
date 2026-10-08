@@ -37,10 +37,18 @@ function nameColour(name) {
 function makeNameSpan(name, isAdmin) {
 	const span = document.createElement("span");
 	span.className = "name";
-	span.textContent = name;
 	if (isAdmin) {
 		span.classList.add("admin");
+		const letters = String(name).split("");
+		for (let i = 0; i < letters.length; i++) {
+			const letter = document.createElement("span");
+			letter.className = "wiggle";
+			letter.textContent = letters[i];
+			letter.style.animationDelay = (i * 0.12) + "s";
+			span.appendChild(letter);
+		}
 	} else {
+		span.textContent = name;
 		span.style.color = nameColour(String(name));
 	}
 	return span;
