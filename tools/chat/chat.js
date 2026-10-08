@@ -34,11 +34,15 @@ function nameColour(name) {
 	return NAME_COLOURS[(hash >>> 0) % NAME_COLOURS.length];
 }
 
-function makeNameSpan(name) {
+function makeNameSpan(name, isAdmin) {
 	const span = document.createElement("span");
 	span.className = "name";
 	span.textContent = name;
-	span.style.color = nameColour(String(name));
+	if (isAdmin) {
+		span.classList.add("admin");
+	} else {
+		span.style.color = nameColour(String(name));
+	}
 	return span;
 }
 
@@ -60,7 +64,7 @@ function setStatus(text, isError) {
 
 function showIdentity() {
 	setStatus("you are ", false);
-	statusLine.appendChild(makeNameSpan(myName));
+	statusLine.appendChild(makeNameSpan(myName, myName === "torgo"));
 }
 
 function addMessage(row) {
@@ -79,7 +83,7 @@ function addMessage(row) {
 	const bodySpan = document.createElement("span");
 	bodySpan.className = "body";
 	bodySpan.textContent = row.body;
-	div.appendChild(makeNameSpan(row.name));
+	div.appendChild(makeNameSpan(row.name, row.is_admin === true));
 	div.appendChild(bodySpan);
 	log.appendChild(div);
 	while (log.children.length > MAX_SHOWN) {
@@ -91,7 +95,7 @@ function addMessage(row) {
 async function loadRecent() {
 	const { data, error } = await client
 		.from(TABLE)
-		.select("id, name, body, created_at")
+		.select("id, name, body, created_at, is_admin")
 		.order("created_at", { ascending: false })
 		.limit(MAX_SHOWN);
 	if (error) {
@@ -114,6 +118,10 @@ async function send() {
 		return;
 	}
 	input.value = "";
+	const { data: nameData } = await client.rpc("chat_my_name");
+	if (nameData) {
+		myName = nameData;
+	}
 	showIdentity();
 }
 
