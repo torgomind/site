@@ -2,10 +2,25 @@ const POSTS = [
 
 
 	{
+		date: "2026-10-09",
+		title: "Vexing connective tissues",
+		body: `<p>Thank you to all the weirdos who have been popping in to say hello in the chatroom! I added a download link to Caves of the Snailmen. It was originally created using Python3 when I was learning that language. It is absolute rubbish. This is a javascript port of it. I'd like to make a better traditional roguelike someday.</p>
+<p>I'm pumpkin the breaks (on gamdev) a little this month to celebrate halloween and restore my sanity meter. 🎃</p>
+<p>Last night I was up late spending hours on making these structures (pictured) but I wasn't happy with the result. I tried various approaches including digital painting and VR sculpting but none of it turned out very good, I need to figure out a better technique for making such things.</p>
+`,
+media: [
+			{ type: "img", src: "sausages.jpg", alt: "Difficult sausage structures." }]
+
+		
+	},
+
+
+
+	{
 		date: "2026-10-08",
 		title: "Updating website",
 		body: `<p>Currently updating website. Things will be wonky for a time.</p>
-<p>Girl In Darkness: the work continues, the project is in good shape.
+<p>Girl In Darkness: the work continues, the project is in good shape.</p>
 `
 		
 	},
