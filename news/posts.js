@@ -4,9 +4,9 @@ const POSTS = [
 		date: "2026-10-11",
 		title: "Crack Willows",
 		body: `
-		<p>It would be useful to keep a record here of some of the ideas I've been working on. Especially because a lot of it (sketches, failed concepts, etc) won't end up in the game anyway. I will try to avoid showing too much of the final game.</p>
-		<p>A few months ago I was driving across NSW and I observed these eerie trees everywhere, especially growing along the sides of creeks and streams. Apparently they are called 'Crack Willows' and are an invasive species. They also make me think about <a href="https://www.gutenberg.org/cache/epub/11438/pg11438-images.html">Algernon Blackwood's short story "The Willows." (1907)</a></p>
-		<p>I took some photos of these trees, removed the background, cleaned them up and then made some simplified meshes in Blender, and now they're inside of the game.</p>
+		<p>I will use this space to document some development ideas/experiments, without revealing too much.</p>
+
+		<p>While driving recently, I noticed eerie trees growing along creeks and streams. They're called Crack Willows, they reminded me of <a href="https://www.gutenberg.org/cache/epub/11438/pg11438-images.html">Algernon Blackwood's The Willows (1907)</a>. I took some photos and used them to make some meshes in Blender, thus adding them to the game.</p>
 	`,
 	media: 	[
 				{ type: "img", src: "01_crackwillow2.jpg", alt: "Crack Willow photo." },
