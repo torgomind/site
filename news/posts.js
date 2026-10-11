@@ -1,5 +1,20 @@
 const POSTS = [
 
+
+
+{
+		date: "2026-10-12",
+		title: "Painting Organic Props",
+		body: `
+		<p>Today I have been painting various 3D objects, which can be very slow and tedious. I use my tablet with Blender and ClipStudioPaint. Often I search for relevant images/photos and paste them into the texture and then paint over it to blend it in. Shown is an example of a partially-painted object, to which I will later apply a normal map and other shader effects.</p>
+	`,
+	media: 	[
+				{ type: "img", src: "gl_paint02.jpg"},
+				{ type: "img", src: "gl_paint01.jpg"}
+			]
+	
+	},
+
 	{
 		date: "2026-10-11",
 		title: "Crack Willows",

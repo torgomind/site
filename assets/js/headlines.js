@@ -1,9 +1,15 @@
 const HEADLINE_COUNT = 2;
+const HEADLINE_EXCERPT_LENGTH = 300;
 const HEADLINE_MONTHS = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
 
 function formatHeadlineDate(iso) {
 	const parts = iso.split("-");
 	return parts[2] + " " + HEADLINE_MONTHS[parseInt(parts[1], 10) - 1] + " " + parts[0];
+}
+
+function headlineExcerpt(html) {
+	const parsed = new DOMParser().parseFromString(html, "text/html");
+	return parsed.body.textContent.replace(/\s+/g, " ").trim().slice(0, HEADLINE_EXCERPT_LENGTH);
 }
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -27,8 +33,17 @@ document.addEventListener("DOMContentLoaded", function() {
 		title.className = "news-headline-title";
 		title.textContent = post.title;
 
+		const excerpt = document.createElement("span");
+		excerpt.className = "news-headline-excerpt";
+		excerpt.textContent = headlineExcerpt(post.body);
+
+		const text = document.createElement("span");
+		text.className = "news-headline-text";
+		text.appendChild(title);
+		text.appendChild(excerpt);
+
 		link.appendChild(date);
-		link.appendChild(title);
+		link.appendChild(text);
 		item.appendChild(link);
 		list.appendChild(item);
 	});
