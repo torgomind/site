@@ -123,7 +123,6 @@ const MSG_H = PANEL_H - 1;
 
 const TORCH_RADIUS = 10;
 const ROOM_MIN = 6, ROOM_MAX = 10, MAX_ROOMS = 30;
-const HEAL_AMOUNT = 4;
 const LIGHTNING_DMG = 20, LIGHTNING_RANGE = 5;
 const CONFUSE_TURNS = 10, CONFUSE_RANGE = 8;
 const BLIZZARD_RANGE = 8, BLIZZARD_DMG = 6;
@@ -187,6 +186,7 @@ document.addEventListener('keydown', () => {
 let gameState = null;
 let inputMode = 'normal';
 let pendingSpell = null;
+let pendingItem = null;
 let mouseX = 0, mouseY = 0;
 let animFrame = null;
 let gameMsgs = [];
@@ -230,6 +230,7 @@ class Fighter {
 		this.basePower = power;
 		this.xp = xp;
 		this.deathFn = deathFn;
+		this.dead = false;
 		this.owner = null;
 	}
 	get maxHp() {
@@ -248,8 +249,11 @@ class Fighter {
 		return this.baseDefense + bonus;
 	}
 	takeDamage(dmg) {
+		if (this.dead) return;
 		if (dmg > 0) this.hp -= dmg;
 		if (this.hp <= 0) {
+			this.hp = 0;
+			this.dead = true;
 			if (this.deathFn) this.deathFn(this.owner);
 			if (this.owner !== gameState.player) {
 				gameState.player.fighter.xp += this.xp;
@@ -374,21 +378,24 @@ class Item {
 	use() {
 		if (this.owner.equipment) {
 			this.owner.equipment.toggleEquip();
-			return;
+			return 'used';
 		}
 		if (!this.useFn) {
 			msg('Cannot use ' + this.owner.name + '.', '#aaaaaa');
-			return;
+			return 'cancelled';
 		}
-		const result = this.useFn();
-		if (result !== 'cancelled') {
-			gameState.inventory = gameState.inventory.filter(i => i !== this.owner);
-		}
+		const result = this.useFn(this.owner);
+		if (result === 'cancelled' || result === 'pending') return result;
+		this.consume();
+		return 'used';
+	}
+	consume() {
+		gameState.inventory = gameState.inventory.filter(i => i !== this.owner);
 	}
 	pickUp() {
 		if (gameState.inventory.length >= 26) {
 			msg('Inventory full!', '#ff4444');
-			return;
+			return false;
 		}
 		gameState.inventory.push(this.owner);
 		gameState.objects = gameState.objects.filter(o => o !== this.owner);
@@ -396,13 +403,15 @@ class Item {
 		if (this.owner.equipment && !getEquippedInSlot(this.owner.equipment.slot)) {
 			this.owner.equipment.equip();
 		}
+		return true;
 	}
 	drop() {
 		if (this.owner.equipment && this.owner.equipment.isEquipped) this.owner.equipment.dequip();
-		gameState.objects.push(this.owner);
 		gameState.inventory = gameState.inventory.filter(i => i !== this.owner);
 		this.owner.x = gameState.player.x;
 		this.owner.y = gameState.player.y;
+		this.owner.alwaysVisible = true;
+		this.owner.sendToBack();
 		msg('Dropped ' + this.owner.name + '.', '#ffff44');
 	}
 }
@@ -427,6 +436,8 @@ class Equipment {
 	}
 	dequip() {
 		this.isEquipped = false;
+		const f = gameState.player.fighter;
+		if (f.hp > f.maxHp) f.hp = f.maxHp;
 		msg('Removed ' + this.owner.name + ' from ' + this.slot + '.', '#ffff66');
 	}
 }
@@ -709,6 +720,8 @@ function renderGame() {
 		ctx.lineWidth = 2;
 		ctx.strokeRect(mouseX * TILE_SIZE * SCALE, mouseY * TILE_SIZE * SCALE, TILE_SIZE * SCALE, TILE_SIZE * SCALE);
 	}
+
+	if (gs.gamePhase === 'dead') drawDeathBanner();
 }
 
 function getNamesAt(x, y) {
@@ -953,19 +966,19 @@ function makeMap() {
 
 function explodeDeath(monster) {
 	msg(capitalize(monster.name) + ' EXPLODES! +' + monster.fighter.xp + ' xp.', '#ff8800');
-	for (const obj of gameState.objects) {
-		if (obj.fighter && distBetween(obj, monster) <= 2) {
-			const dmg = rng(8, 16);
-			msg(capitalize(obj.name) + ' caught in explosion for ' + dmg + '!', '#ff6600');
-			obj.fighter.takeDamage(dmg);
-		}
-	}
 	monster.tileIdx = 22;
 	monster.blocks = false;
 	monster.fighter = null;
 	monster.ai = null;
 	monster.name = 'remains of ' + monster.name;
 	monster.sendToBack();
+	for (const obj of [...gameState.objects]) {
+		if (obj !== monster && obj.fighter && distBetween(obj, monster) <= 2) {
+			const dmg = rng(8, 16);
+			msg(capitalize(obj.name) + ' caught in explosion for ' + dmg + '!', '#ff6600');
+			obj.fighter.takeDamage(dmg);
+		}
+	}
 }
 
 function fleeingDeath(monster) {
@@ -987,7 +1000,7 @@ function fleeingDeath(monster) {
 	} else {
 		loot = new Obj(monster.x, monster.y, 21, 'scroll of nova', { item: new Item(() => {
 			msg('NOVA BLAST erupts around you!', '#ff8800');
-			for (const obj of gameState.objects) {
+			for (const obj of [...gameState.objects]) {
 				if (obj.fighter && obj !== gameState.player && distBetween(gameState.player, obj) <= 5) {
 					const d = rng(15, 25);
 					msg(capitalize(obj.name) + ' blasted for ' + d + '!', '#ff6600');
@@ -1008,15 +1021,19 @@ function fleeingDeath(monster) {
 
 function bossDeath(monster) {
 	msg('THE SNAILMAN KING IS DEAD!', '#ffff00');
-	msg('You have rescued the princess and escaped the dungeon!', '#ffaaff');
-	gameState.gamePhase = 'won';
 	monster.tileIdx = 22;
 	monster.blocks = false;
 	monster.fighter = null;
 	monster.ai = null;
 	monster.name = 'remains of the Snailman King';
 	monster.sendToBack();
-	setTimeout(() => showWinScreen(), 800);
+	const gs = gameState;
+	if (gs.gamePhase !== 'playing') return;
+	msg('You have rescued the princess and escaped the dungeon!', '#ffaaff');
+	gs.gamePhase = 'won';
+	setTimeout(() => {
+		if (gameState === gs && gs.gamePhase === 'won') showWinScreen();
+	}, 800);
 }
 
 function monsterDeath(monster) {
@@ -1035,13 +1052,29 @@ function playerDeath(player) {
 	player.tileIdx = 22;
 }
 
+function drawDeathBanner() {
+	const cx = canvas.width / 2;
+	const cy = MAP_H * TILE_SIZE * SCALE / 2;
+	ctx.fillStyle = 'rgba(0,0,0,0.65)';
+	ctx.fillRect(0, cy - 110, canvas.width, 220);
+	ctx.textAlign = 'center';
+	ctx.textBaseline = 'middle';
+	ctx.fillStyle = '#cc0000';
+	ctx.font = '96px monospace';
+	ctx.fillText('YOU DIED', cx, cy - 25);
+	ctx.fillStyle = '#aaaaaa';
+	ctx.font = '32px monospace';
+	ctx.fillText('Press Enter or Esc to return to the menu', cx, cy + 60);
+	ctx.textAlign = 'start';
+}
+
 function castHeal() {
 	const p = gameState.player;
 	if (p.fighter.hp >= p.fighter.maxHp) {
 		msg('Already at full health.', '#ff4444');
 		return 'cancelled';
 	}
-	p.fighter.heal(HEAL_AMOUNT);
+	p.fighter.heal(Math.floor(p.fighter.maxHp / 2));
 	msg('You feel better.', '#aa44ff');
 }
 
@@ -1055,9 +1088,9 @@ function castLightning() {
 	target.fighter.takeDamage(LIGHTNING_DMG);
 }
 
-function castConfuse() {
+function castConfuse(itemObj) {
 	msg('Click an enemy to confuse it. Right-click to cancel.', '#44ffff');
-	startTargetMode('confuse');
+	startTargetMode('confuse', itemObj);
 	return 'pending';
 }
 
@@ -1075,6 +1108,7 @@ function castBlizzard() {
 		return 'cancelled';
 	}
 	for (const e of enemies) {
+		if (!e.fighter) continue;
 		const dmg = Math.floor(Math.random() * BLIZZARD_DMG);
 		if (dmg > 0) {
 			msg('Blizzard hits ' + e.name + ' for ' + dmg + ' damage!', '#88aaff');
@@ -1085,31 +1119,32 @@ function castBlizzard() {
 	}
 }
 
-function castFireball() {
+function castFireball(itemObj) {
 	msg('Click a tile for fireball. Right-click to cancel.', '#44ffff');
-	startTargetMode('fireball');
+	startTargetMode('fireball', itemObj);
 	return 'pending';
 }
 
-function startTargetMode(spell) {
+function startTargetMode(spell, itemObj) {
 	inputMode = 'target';
 	pendingSpell = spell;
+	pendingItem = itemObj || null;
 	renderGame();
 }
 
 function handleTarget(x, y) {
-	inputMode = 'normal';
 	const spell = pendingSpell;
-	pendingSpell = null;
 	if (x === null) {
+		inputMode = 'normal';
+		pendingSpell = null;
+		pendingItem = null;
 		msg('Cancelled.', '#888888');
-		gameState.inventory = gameState.inventory.filter(i => i.item && i.item.useFn !== (spell === 'fireball' ? castFireball : castConfuse) || true);
 		return;
 	}
+	if (!isInFov(x, y)) { msg('Cannot target there.', '#ff4444'); return; }
 	if (spell === 'fireball') {
-		if (!isInFov(x, y)) { msg('Cannot target there.', '#ff4444'); return; }
 		msg('FIREBALL explodes!', '#ff8800');
-		for (const obj of gameState.objects) {
+		for (const obj of [...gameState.objects]) {
 			if (obj.fighter && distTo(obj, x, y) <= FIREBALL_RADIUS) {
 				msg(capitalize(obj.name) + ' burns for ' + FIREBALL_DMG + ' damage!', '#ff6600');
 				obj.fighter.takeDamage(FIREBALL_DMG);
@@ -1124,13 +1159,20 @@ function handleTarget(x, y) {
 			}
 		}
 		if (!target) { msg('No monster there.', '#ff4444'); return; }
-		const oldAi = target.ai;
-		target.ai = new ConfusedMonster(oldAi);
-		target.ai.owner = target;
+		if (target.ai instanceof ConfusedMonster) {
+			target.ai.turnsLeft = CONFUSE_TURNS;
+		} else {
+			const oldAi = target.ai;
+			target.ai = new ConfusedMonster(oldAi);
+			target.ai.owner = target;
+		}
 		msg(capitalize(target.name) + ' looks confused!', '#44ff88');
 	}
-	monstersAct();
-	dirtyFov = true;
+	inputMode = 'normal';
+	pendingSpell = null;
+	if (pendingItem) pendingItem.item.consume();
+	pendingItem = null;
+	endPlayerTurn();
 }
 
 function closestMonster(maxRange) {
@@ -1165,8 +1207,15 @@ function monstersAct() {
 	}
 }
 
+function endPlayerTurn() {
+	monstersAct();
+	checkLevelUp();
+	dirtyFov = true;
+}
+
 function checkLevelUp() {
 	const gs = gameState;
+	if (gs.gamePhase !== 'playing') return;
 	const needed = LEVEL_UP_BASE + gs.player.level * LEVEL_UP_FACTOR;
 	if (gs.player.fighter.xp >= needed) {
 		gs.player.fighter.xp -= needed;
@@ -1187,8 +1236,8 @@ function showLevelUpMenu() {
 		if (choice === 0) { f.baseMaxHp += 20; f.hp += 20; }
 		else if (choice === 1) { f.basePower += 1; }
 		else if (choice === 2) { f.baseDefense += 1; }
-		renderGame();
-	});
+		checkLevelUp();
+	}, false);
 }
 
 function showInventoryMenu(header, callback) {
@@ -1210,14 +1259,27 @@ function showInventoryMenu(header, callback) {
 
 let activeMenuCallback = null;
 let activeMenuOptions = [];
+let activeMenuCancellable = true;
 
-function showMenuOverlay(title, options, callback) {
+function closeMenu(choice) {
+	overlay.style.display = 'none';
+	inputMode = 'normal';
+	const cb = activeMenuCallback;
+	activeMenuCallback = null;
+	activeMenuOptions = [];
+	if (cb) cb(choice);
+	renderGame();
+}
+
+function showMenuOverlay(title, options, callback, cancellable = true) {
 	activeMenuCallback = callback;
 	activeMenuOptions = options;
+	activeMenuCancellable = cancellable;
 	inputMode = 'menu';
 
 	overlay.innerHTML = '';
 	overlay.style.display = 'flex';
+	overlay.style.gap = '';
 
 	const h = document.createElement('div');
 	h.style.cssText = 'color:#aaaacc;font-family:monospace;font-size:13px;margin-bottom:12px;text-align:center;white-space:pre-wrap;max-width:360px;';
@@ -1229,24 +1291,15 @@ function showMenuOverlay(title, options, callback) {
 		btn.className = 'menu-option';
 		const letter = String.fromCharCode(97 + i);
 		btn.innerHTML = '<span class="key">[' + letter + ']</span> ' + opt;
-		btn.onclick = () => {
-			overlay.style.display = 'none';
-			inputMode = 'normal';
-			callback(i);
-			renderGame();
-		};
+		btn.onclick = () => closeMenu(i);
 		overlay.appendChild(btn);
 	});
 
+	if (!cancellable) return;
 	const cancel = document.createElement('div');
 	cancel.className = 'menu-option';
 	cancel.innerHTML = '<span class="key">[Esc]</span> Cancel';
-	cancel.onclick = () => {
-		overlay.style.display = 'none';
-		inputMode = 'normal';
-		callback(null);
-		renderGame();
-	};
+	cancel.onclick = () => closeMenu(null);
 	overlay.appendChild(cancel);
 }
 
@@ -1282,8 +1335,12 @@ function newGame() {
 	gameMsgs = [];
 	fovMap = null;
 	dirtyFov = true;
+	pendingSpell = null;
+	pendingItem = null;
+	activeMenuCallback = null;
+	activeMenuOptions = [];
 	makeMap();
-	const dagger = new Obj(0, 0, 25, 'dagger', { equipment: new Equipment('right hand', 2, 0, 0) });
+	const dagger = new Obj(0, 0, 25, 'dagger', { equipment: new Equipment('right hand', 2, 0, 0), alwaysVisible: true });
 	gameState.inventory.push(dagger);
 	dagger.equipment.equip();
 	msg('Welcome to the Caves of the Snailmen. Good luck.', '#ffffff');
@@ -1385,19 +1442,10 @@ canvas.addEventListener('contextmenu', (e) => {
 document.addEventListener('keydown', (e) => {
 	if (inputMode === 'menu') {
 		if (e.key === 'Escape') {
-			overlay.style.display = 'none';
-			inputMode = 'normal';
-			if (activeMenuCallback) activeMenuCallback(null);
-			renderGame();
-		} else {
+			if (activeMenuCancellable) closeMenu(null);
+		} else if (e.key.length === 1) {
 			const code = e.key.toLowerCase().charCodeAt(0) - 97;
-			if (code >= 0 && code < activeMenuOptions.length) {
-				overlay.style.display = 'none';
-				inputMode = 'normal';
-				const cb = activeMenuCallback;
-				if (cb) cb(code);
-				renderGame();
-			}
+			if (code >= 0 && code < activeMenuOptions.length) closeMenu(code);
 		}
 		return;
 	}
@@ -1410,9 +1458,8 @@ document.addEventListener('keydown', (e) => {
 		return;
 	}
 
-	if (!gameState || (gameState.gamePhase !== 'playing' && gameState.gamePhase !== 'won')) {
-		if (e.key === 'Escape' || e.key === 'Enter') {
-			overlay.style.display = 'flex';
+	if (!gameState || gameState.gamePhase !== 'playing') {
+		if ((!gameState || gameState.gamePhase === 'dead') && (e.key === 'Escape' || e.key === 'Enter')) {
 			showMainMenu();
 		}
 		return;
@@ -1429,9 +1476,7 @@ document.addEventListener('keydown', (e) => {
 		e.preventDefault();
 		const [dx, dy] = dirMap[e.code];
 		if (dx !== 0 || dy !== 0) playerMoveOrAttack(dx, dy);
-		monstersAct();
-		checkLevelUp();
-		dirtyFov = true;
+		endPlayerTurn();
 		return;
 	}
 
@@ -1439,23 +1484,21 @@ document.addEventListener('keydown', (e) => {
 	if (k === 'g') {
 		for (const obj of gameState.objects) {
 			if (obj.x === gameState.player.x && obj.y === gameState.player.y && obj.item) {
-				obj.item.pickUp();
-				monstersAct();
+				if (obj.item.pickUp()) endPlayerTurn();
 				break;
 			}
 		}
 	} else if (k === 'i') {
 		showInventoryMenu('Use which item?', (item) => {
 			if (item && item.item) {
-				const result = item.item.use();
-				if (result !== 'pending') monstersAct();
+				if (item.item.use() === 'used') endPlayerTurn();
 			}
 		});
 	} else if (k === 'd') {
 		showInventoryMenu('Drop which item?', (item) => {
 			if (item && item.item) {
 				item.item.drop();
-				monstersAct();
+				endPlayerTurn();
 			}
 		});
 	} else if (k === 'c') {
@@ -1483,6 +1526,7 @@ document.addEventListener('keydown', (e) => {
 });
 
 function showMainMenu() {
+	overlay.style.gap = '';
 	overlay.innerHTML = `
 		<h1>CAVES OF THE SNAILMEN</h1>
 		<div class="subtitle">by torgo (2016)</div>
