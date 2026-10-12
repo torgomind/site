@@ -6,7 +6,7 @@ const POSTS = [
 		date: "2026-10-12",
 		title: "Painting Organic Props",
 		body: `
-		<p>Today I have been painting various 3D objects, which can be very slow and tedious. I use my tablet with Blender and ClipStudioPaint. Often I search for relevant images/photos and paste them into the texture and then paint over it to blend it in. Shown is an example of a partially-painted object, to which I will later apply a normal map and other shader effects.</p>
+		<p>Modelling of some 3D objects like this in Blender, then painting them sometimes using ClipStudio or photo collage. Later I make a normal map and add other shader effects.</p>
 	`,
 	media: 	[
 				{ type: "img", src: "gl_paint02.jpg"},
@@ -19,9 +19,7 @@ const POSTS = [
 		date: "2026-10-11",
 		title: "Crack Willows",
 		body: `
-		<p>I will use this space to document some development ideas/experiments, without revealing too much.</p>
-
-		<p>While driving recently, I noticed eerie trees growing along creeks and streams. They're called Crack Willows, they reminded me of <a href="https://www.gutenberg.org/cache/epub/11438/pg11438-images.html">Algernon Blackwood's The Willows (1907)</a>. I took some photos and used them to make some meshes in Blender, thus adding them to the game.</p>
+		<p>I noticed eerie trees growing along local creeks and streams: they're called Crack Willows, they reminded me of <a href="https://www.gutenberg.org/cache/epub/11438/pg11438-images.html">Algernon Blackwood's The Willows (1907)</a>. I took some photos and used them to make some meshes in Blender, then added to the game.</p>
 	`,
 	media: 	[
 				{ type: "img", src: "01_crackwillow2.jpg", alt: "Crack Willow photo." },
