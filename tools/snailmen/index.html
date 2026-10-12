@@ -876,7 +876,7 @@ function makeThroneRoom() {
 	gs.objects = [gs.player];
 	gs.map = Array.from({ length: MAP_W }, () => Array.from({ length: MAP_H }, () => new Tile(true)));
 
-	const hallX1 = 15, hallX2 = 30, hallY = 21;
+	const hallX1 = 15, hallX2 = 38, hallY = 21;
 	for (let x = hallX1; x <= hallX2; x++) {
 		for (let y = hallY - 1; y <= hallY + 1; y++) {
 			gs.map[x][y].blocked = false;
