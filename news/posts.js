@@ -2,7 +2,22 @@ const POSTS = [
 
 
 
-{
+	{
+		date: "2026-10-13",
+		title: "Protagonist Model",
+		body: `
+		<p>I've gradually made improvements to the Girl model over time. Still disatisfied, I recently overhauled her again, changing to darker attire and adding more detail. Though her face/head have remained unchanged from the first version.</p>
+	`,
+	media: 	[
+				{ type: "img", src: "girl1A.png"},
+				{ type: "img", src: "girl1B.png"},
+				{ type: "img", src: "girl1C.png"},
+				{ type: "img", src: "girl1D.png"}
+			]
+	
+	},
+
+	{
 		date: "2026-10-12",
 		title: "Painting Organic Props",
 		body: `
@@ -53,7 +68,8 @@ media: [
 <p>Girl In Darkness: the work continues, the project is in good shape.</p>
 `
 		
-	},
+	}
+/*,
 
 
 	{
@@ -120,5 +136,5 @@ media: [
 			{ type: "video", src: "test_video.mp4" },
 			{ type: "img", src: "test_image.jpg", alt: "Test image" }
 		]
-	}
+	}*/
 ];
