@@ -1,4 +1,22 @@
 const POSTS = [
+	{
+		date: "2026-10-20",
+		title: "World maps and zone maps",
+		body: `
+		<p>These images show how I've planned out the world and zones and how it has evolved over time. The first image shows my original concept for the interconnected areas. I wanted the world to be vertically-stacked and full of connective tunnels. The 2nd image shows a low poly wireframe of the entire game world. The 3rd and 4th images show sketches for levels as I iterate. Often a level isn't working so I use illustrations to plan out changes. The final image shows a more recent sketch of the world map, though I continue to make refinements.</p>
+		<p>I realised some of the areas were too big and empty, so I've been trying to optimise for quality rather than scale.<p>
+	`,
+	media: 	[
+				{ type: "img", src: "map01.jpg"},
+				{ type: "img", src: "map02.jpg"},
+				{ type: "img", src: "map03.jpg"},
+				{ type: "img", src: "map04.png"},
+				{ type: "img", src: "map05.jpg"}
+				
+			]
+	
+	},
+
 
 
 
