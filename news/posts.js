@@ -1,4 +1,21 @@
 const POSTS = [
+
+	{
+		date: "2026-10-21",
+		title: "Doodles and sketches",
+		body: `
+		<p>I've been painting and drawing my entire life but game development is relatively new to me. So my creative process is generally more traditional: most ideas start off as sketches on paper. I have dozens of sketchbooks and folders filled with drawings, most of which are dead ends that I don't end up using. Most interesting ideas arrive only after a lot of experimentation.</p>
+	`,
+	media: 	[
+				{ type: "img", src: "sketch1.jpg"},
+				{ type: "img", src: "sketch3.png"},
+				{ type: "img", src: "sketch4.jpg"},
+				{ type: "img", src: "sketch5.png"}
+				
+			]
+	
+	},
+
 	{
 		date: "2026-10-20",
 		title: "World maps and zone maps",
@@ -16,9 +33,6 @@ const POSTS = [
 			]
 	
 	},
-
-
-
 
 	{
 		date: "2026-10-13",
