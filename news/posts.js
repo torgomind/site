@@ -1,11 +1,21 @@
 const POSTS = [
 
 	{
+		date: "2026-10-22",
+		title: "wake up Robot",
+		body: `
+		<p>I decided to have a little fun today so I put aside an hour to write a little script for a chatbot for the chatroom. It's very simple. The script is actually an unused prototype from Navicula, and it's loosely based on the <a href="https://en.wikipedia.org/wiki/ELIZA">ELIZA MS-DOS program</a>. I also dug up some of the Navicula Markov chain conversation code and reappropriated that too. Still fine-tuning but the bot already has some interesting abilities. <a href="https://www.torgomind.com/chat/">Click here</a> to chat with your new friend TorgoBot today!</p>
+		`,
+
+	},
+
+
+	{
 		date: "2026-10-21",
 		title: "Doodles and sketches",
 		body: `
 		<p>I've been painting and drawing my entire life but game development is relatively new to me. So my creative process is generally more traditional: most ideas start off as sketches on paper. I have dozens of sketchbooks and folders filled with drawings, most of which are dead ends that I don't end up using. Most interesting ideas arrive only after a lot of experimentation.</p>
-	`,
+		`,
 	media: 	[
 				{ type: "img", src: "sketch1.jpg"},
 				{ type: "img", src: "sketch3.png"},
