@@ -1,5 +1,20 @@
 const POSTS = [
 
+
+	{
+		date: "2026-10-29",
+		title: "happy halloween",
+		body: `
+		<p>The last week or so I've been trying to flesh out game logic and ingame text/dialogue. Not a lot of cool screenshots to share. Also a lot of level design stuff, but I don't want to spoil any of that.</p>
+		<p>Instead here is a stupid picture of a really early build of Navicula Meatus, when I had only been working on it for about 1 day.</p>
+		`,
+	media: 	[
+				{ type: "img", src: "xoiomoiox.png"},
+			]
+
+	},
+
+
 	{
 		date: "2026-10-22",
 		title: "wake up Robot",
