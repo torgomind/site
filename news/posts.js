@@ -1,6 +1,20 @@
 const POSTS = [
 
 
+{
+		date: "2026-11-13",
+		title: "blender and bugs",
+		body: `
+		<p>Not a huge amount of stuff to report. Progress is steady but not very exciting. I've been fixing bugs and problems, at the moment my checklist of bugs has 122 bugs, 32 of which have been fixed.</p>
+		<p>I've also been in Blender overhauling levels, and have been fixing the UI. Things are slowly coming together. I am very much looking forward to working on creatures, npcs and other art, which is much more exciting than building level geometry.</p>
+		`,
+	media: 	[
+				{ type: "img", src: "starry.png"},
+			]
+
+	},
+
+
 	{
 		date: "2026-10-29",
 		title: "happy halloween",
