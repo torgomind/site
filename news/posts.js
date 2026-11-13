@@ -6,7 +6,9 @@ const POSTS = [
 		title: "blender and bugs",
 		body: `
 		<p>Not a huge amount of stuff to report. Progress is steady but not very exciting. I've been fixing bugs and problems, at the moment my checklist of bugs has 122 bugs, 32 of which have been fixed.</p>
+		<p>Apparently the project currently has 25,000 lines of code. If I subtract comments, it's closer to 20,000 lines. It should stay around that number because most of the coding is completed.</p>
 		<p>I've also been in Blender overhauling levels, and have been fixing the UI. Things are slowly coming together. I am very much looking forward to working on creatures, npcs and other art, which is much more exciting than building level geometry.</p>
+		
 		`,
 	media: 	[
 				{ type: "img", src: "starry.png"},
