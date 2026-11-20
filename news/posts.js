@@ -1,7 +1,26 @@
 const POSTS = [
 
 
-{
+	{
+		date: "2026-11-20",
+		title: "tablecloth tricks",
+		body: `
+		<p>Things are coming together, feeling cohesive and connecting well. A few key areas that still need to be mapped out. The first image shows a draft of one of the areas where I really wanted the walls to have this bubble structure with some passages becoming more narrow. The next image shows a plan view of a different area; I was reconfiguring this zone to make exploration a little more interesting. I am thrilled about this location, it will be good.</p>
+		<p>I acquired this device (image3) in the mail called an FM-1, it might be useful to make some sounds/music for the game, I am still learning how to utilise it.</p>
+		<p>I took a day to experiment with some ideas I've had in my mind. Image4 shows a short prototype I made for a action-based hoplite/horseshoecrab game. It would be a game about scuttling around trying to navigate relationships and connections on a surface, like as though you are a one of countless of lice on a vast landscape of porous skin.</p>
+		<p>Image5 shows a very rough idea of a UI I was thinking about for a Paranthropus game concept. The game would be about gathering twigs and berries, and using moonlight to communicate with god, from the perspective of a paranthropus.</p>
+		<p>The final image depicts a magician about to pull away the tablecloth, and the rabbit is on a plate looking nonplussed, I love this picture for some reason. I keep looking at it.</p>
+		
+		
+		`,
+	media: 	[
+				{ type: "img", src: "hosp1.png"},{ type: "img", src: "hosp2.jpg"},{ type: "img", src: "hosp3.jpg"},{ type: "img", src: "hosp4.png"},{ type: "img", src: "hosp5.png"},{ type: "img", src: "hosp6.jpg"},
+			]
+
+	},
+
+
+	{
 		date: "2026-11-13",
 		title: "blender and bugs",
 		body: `
