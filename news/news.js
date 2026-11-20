@@ -21,6 +21,9 @@ function makeThumb(item) {
 	img.alt = item.alt || "";
 	img.loading = "lazy";
 	img.className = "news-thumb";
+	img.addEventListener("load", function() {
+		img.style.setProperty("--thumb-ratio", img.naturalWidth / img.naturalHeight);
+	});
 	img.addEventListener("click", function() {
 		openOverlay(img.src, img.alt);
 	});

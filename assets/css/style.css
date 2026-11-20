@@ -517,14 +517,19 @@ footer {
 }
 
 .news-thumbs {
+	--thumb-height: 140px;
 	display: flex;
-	flex-wrap: wrap;
+	align-items: flex-start;
 	gap: 0.6rem;
 }
 
 .news-thumb {
-	height: 140px;
-	max-width: 100%;
+	--thumb-ratio: 1;
+	box-sizing: content-box;
+	flex: 0 1 calc(var(--thumb-height) * var(--thumb-ratio));
+	min-width: 0;
+	height: auto;
+	aspect-ratio: var(--thumb-ratio);
 	object-fit: cover;
 	border: 1px solid var(--color-border-card);
 	cursor: zoom-in;
@@ -618,8 +623,8 @@ footer {
 		font-size: 0.95rem;
 	}
 
-	.news-thumb {
-		height: 100px;
+	.news-thumbs {
+		--thumb-height: 100px;
 	}
 }
 
